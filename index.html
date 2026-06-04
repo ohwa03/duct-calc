@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Duct Calc">
+  <title>Duct Calc</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background: #0F0F0F;
+      color: #F0EDE8;
+      font-family: 'Courier New', Courier, monospace;
+      padding: max(env(safe-area-inset-top), 24px) 18px max(env(safe-area-inset-bottom), 24px);
+    }
+
+    .header { margin-bottom: 24px; }
+    .header .sup { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #E8610A; margin-bottom: 6px; }
+    .header h1 { font-size: 24px; font-weight: 700; }
+    .header .sub { font-size: 11px; color: #666260; margin-top: 4px; }
+
+    .deck {
+      border-radius: 10px;
+      padding: 20px 16px;
+      margin-bottom: 16px;
+      background: #1A1A1A;
+    }
+    .hd { border: 1px solid rgba(74,127,212,0.4); }
+    .cd { border: 1px solid rgba(61,170,106,0.4); }
+
+    .deck-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .deck-name { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; }
+    .hd .deck-name { color: #4A7FD4; }
+    .cd .deck-name { color: #3DAA6A; }
+
+    .clr {
+      background: transparent;
+      border: 1px solid #2E2E2E;
+      border-radius: 4px;
+      color: #666260;
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      padding: 4px 10px;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+
+    .field label {
+      display: block;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #666260;
+      margin-bottom: 6px;
+    }
+    .ibox {
+      display: flex;
+      align-items: center;
+      background: #222;
+      border: 1px solid #2E2E2E;
+      border-radius: 6px;
+    }
+    .ibox input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #F0EDE8;
+      font-family: 'Courier New', monospace;
+      font-size: 28px;
+      padding: 12px 10px;
+      width: 100%;
+    }
+    .ibox input::-webkit-inner-spin-button,
+    .ibox input::-webkit-outer-spin-button { -webkit-appearance: none; }
+    .ibox .u { font-size: 10px; color: #666260; padding-right: 10px; white-space: nowrap; }
+
+    .results { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+
+    .rbox { border-radius: 8px; padding: 14px; }
+    .rbox .rl { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: #666260; margin-bottom: 6px; }
+    .rbox .rv { font-size: 38px; font-weight: 700; }
+
+    .rbox.cfm { background: #141414; border: 1px solid #2E2E2E; }
+    .rbox.cfm .rv { color: #F0EDE8; }
+
+    .rbox.ls-h { background: rgba(74,127,212,0.1); border: 1px solid rgba(74,127,212,0.4); }
+    .rbox.ls-h .rl { color: #4A7FD4; }
+    .rbox.ls-h .rv { color: #4A7FD4; }
+
+    .rbox.ls-c { background: rgba(61,170,106,0.1); border: 1px solid rgba(61,170,106,0.4); }
+    .rbox.ls-c .rl { color: #3DAA6A; }
+    .rbox.ls-c .rv { color: #3DAA6A; }
+
+    .trace {
+      background: #0A0A0A;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 11px;
+      color: #666260;
+      line-height: 2.1;
+    }
+    .trace b { color: #F0EDE8; font-weight: 400; }
+
+    .empty {
+      border: 1px dashed #2E2E2E;
+      border-radius: 8px;
+      padding: 28px;
+      text-align: center;
+      font-size: 11px;
+      color: #444;
+    }
+
+    .ref {
+      background: #1A1A1A;
+      border: 1px solid #2E2E2E;
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .ref .rt { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #666260; margin-bottom: 8px; }
+    .ref p { font-size: 11px; color: #666260; line-height: 2.1; }
+    .ref b { color: #F0EDE8; font-weight: 400; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="sup">Shortridge ADM-870C</div>
+    <h1>Duct Flow Calc</h1>
+    <div class="sub">FPM × area(ft²) = CFM → L/s</div>
+  </div>
+
+  <div class="deck hd">
+    <div class="deck-top">
+      <div class="deck-name">Hot Deck — HD</div>
+      <button class="clr" onclick="clr('hd')">clear</button>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label>Duct diameter</label>
+        <div class="ibox"><input id="hd-d" type="number" inputmode="decimal" placeholder="0" oninput="go('hd')"><span class="u">in</span></div>
+      </div>
+      <div class="field">
+        <label>Shortridge FPM</label>
+        <div class="ibox"><input id="hd-f" type="number" inputmode="decimal" placeholder="0" oninput="go('hd')"><span class="u">FPM</span></div>
+      </div>
+    </div>
+    <div id="hd-out"><div class="empty">enter diameter + FPM</div></div>
+  </div>
+
+  <div class="deck cd">
+    <div class="deck-top">
+      <div class="deck-name">Cold Deck — CD</div>
+      <button class="clr" onclick="clr('cd')">clear</button>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label>Duct diameter</label>
+        <div class="ibox"><input id="cd-d" type="number" inputmode="decimal" placeholder="0" oninput="go('cd')"><span class="u">in</span></div>
+      </div>
+      <div class="field">
+        <label>Shortridge FPM</label>
+        <div class="ibox"><input id="cd-f" type="number" inputmode="decimal" placeholder="0" oninput="go('cd')"><span class="u">FPM</span></div>
+      </div>
+    </div>
+    <div id="cd-out"><div class="empty">enter diameter + FPM</div></div>
+  </div>
+
+  <div class="ref">
+    <div class="rt">formula</div>
+    <p>
+      <b>area(ft²)</b> = π/4 × d(in)² ÷ 144<br>
+      <b>CFM</b> = FPM × area(ft²)<br>
+      <b>L/s</b> = CFM × 0.4719
+    </p>
+  </div>
+
+  <script>
+    function f(v, d) { return (v == null || isNaN(v)) ? "—" : v.toFixed(d); }
+
+    function go(id) {
+      const d = parseFloat(document.getElementById(id+'-d').value);
+      const fpm = parseFloat(document.getElementById(id+'-f').value);
+      const out = document.getElementById(id+'-out');
+      const lsc = id === 'hd' ? 'ls-h' : 'ls-c';
+
+      if (!d || !fpm || d <= 0 || fpm <= 0) {
+        out.innerHTML = '<div class="empty">enter diameter + FPM</div>';
+        return;
+      }
+      const ain = Math.PI / 4 * d * d;
+      const aft = ain / 144;
+      const cfm = aft * fpm;
+      const ls  = cfm * 0.4719;
+
+      out.innerHTML = `
+        <div class="results">
+          <div class="rbox cfm"><div class="rl">CFM</div><div class="rv">${f(cfm,1)}</div></div>
+          <div class="rbox ${lsc}"><div class="rl">L/s</div><div class="rv">${f(ls,1)}</div></div>
+        </div>
+        <div class="trace">
+          area = π/4 × ${d}² ÷ 144 = <b>${f(ain,2)}</b> in² = <b>${f(aft,4)}</b> ft²<br>
+          CFM = <b>${f(aft,4)}</b> × <b>${fpm}</b> = <b>${f(cfm,1)}</b><br>
+          L/s = <b>${f(cfm,1)}</b> × 0.4719 = <b>${f(ls,1)}</b>
+        </div>`;
+    }
+
+    function clr(id) {
+      document.getElementById(id+'-d').value = '';
+      document.getElementById(id+'-f').value = '';
+      document.getElementById(id+'-out').innerHTML = '<div class="empty">enter diameter + FPM</div>';
+    }
+  </script>
+</body>
+</html>
