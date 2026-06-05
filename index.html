@@ -1,224 +1,410 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="Duct Calc">
-  <title>Duct Calc</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-    body {
-      background: #0F0F0F;
-      color: #F0EDE8;
-      font-family: 'Courier New', Courier, monospace;
-      padding: max(env(safe-area-inset-top), 24px) 18px max(env(safe-area-inset-bottom), 24px);
-    }
-
-    .header { margin-bottom: 24px; }
-    .header .sup { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #E8610A; margin-bottom: 6px; }
-    .header h1 { font-size: 24px; font-weight: 700; }
-    .header .sub { font-size: 11px; color: #666260; margin-top: 4px; }
-
-    .deck {
-      border-radius: 10px;
-      padding: 20px 16px;
-      margin-bottom: 16px;
-      background: #1A1A1A;
-    }
-    .hd { border: 1px solid rgba(74,127,212,0.4); }
-    .cd { border: 1px solid rgba(61,170,106,0.4); }
-
-    .deck-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 18px;
-    }
-    .deck-name { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; }
-    .hd .deck-name { color: #4A7FD4; }
-    .cd .deck-name { color: #3DAA6A; }
-
-    .clr {
-      background: transparent;
-      border: 1px solid #2E2E2E;
-      border-radius: 4px;
-      color: #666260;
-      font-family: 'Courier New', monospace;
-      font-size: 10px;
-      padding: 4px 10px;
-      cursor: pointer;
-      text-transform: uppercase;
-    }
-
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-
-    .field label {
-      display: block;
-      font-size: 9px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: #666260;
-      margin-bottom: 6px;
-    }
-    .ibox {
-      display: flex;
-      align-items: center;
-      background: #222;
-      border: 1px solid #2E2E2E;
-      border-radius: 6px;
-    }
-    .ibox input {
-      background: transparent;
-      border: none;
-      outline: none;
-      color: #F0EDE8;
-      font-family: 'Courier New', monospace;
-      font-size: 28px;
-      padding: 12px 10px;
-      width: 100%;
-    }
-    .ibox input::-webkit-inner-spin-button,
-    .ibox input::-webkit-outer-spin-button { -webkit-appearance: none; }
-    .ibox .u { font-size: 10px; color: #666260; padding-right: 10px; white-space: nowrap; }
-
-    .results { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-
-    .rbox { border-radius: 8px; padding: 14px; }
-    .rbox .rl { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: #666260; margin-bottom: 6px; }
-    .rbox .rv { font-size: 38px; font-weight: 700; }
-
-    .rbox.cfm { background: #141414; border: 1px solid #2E2E2E; }
-    .rbox.cfm .rv { color: #F0EDE8; }
-
-    .rbox.ls-h { background: rgba(74,127,212,0.1); border: 1px solid rgba(74,127,212,0.4); }
-    .rbox.ls-h .rl { color: #4A7FD4; }
-    .rbox.ls-h .rv { color: #4A7FD4; }
-
-    .rbox.ls-c { background: rgba(61,170,106,0.1); border: 1px solid rgba(61,170,106,0.4); }
-    .rbox.ls-c .rl { color: #3DAA6A; }
-    .rbox.ls-c .rv { color: #3DAA6A; }
-
-    .trace {
-      background: #0A0A0A;
-      border-radius: 6px;
-      padding: 10px 12px;
-      font-size: 11px;
-      color: #666260;
-      line-height: 2.1;
-    }
-    .trace b { color: #F0EDE8; font-weight: 400; }
-
-    .empty {
-      border: 1px dashed #2E2E2E;
-      border-radius: 8px;
-      padding: 28px;
-      text-align: center;
-      font-size: 11px;
-      color: #444;
-    }
-
-    .ref {
-      background: #1A1A1A;
-      border: 1px solid #2E2E2E;
-      border-radius: 8px;
-      padding: 12px 14px;
-    }
-    .ref .rt { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #666260; margin-bottom: 8px; }
-    .ref p { font-size: 11px; color: #666260; line-height: 2.1; }
-    .ref b { color: #F0EDE8; font-weight: 400; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Vital Air">
+<title>Vital Air — Field Tools</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{background:#0D1117;color:#F5F2EC;font-family:'DM Sans',sans-serif;padding:max(env(safe-area-inset-top),18px) 16px 92px;min-height:100vh;}
+.accent-bar{position:fixed;top:0;left:0;right:0;height:4px;z-index:100;background:linear-gradient(90deg,#00A8E8 0%,#0077B6 60%,#023E8A 100%);}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+.brand svg{width:42px;height:42px;flex-shrink:0;}
+.brand-text .name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1.5px;line-height:1;}
+.brand-text .tag{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#5A8FB8;font-weight:700;margin-top:3px;}
+.subtitle{font-size:12px;color:#6B7785;margin-bottom:18px;font-weight:500;}
+.page{display:none;}.page.show{display:block;}
+.deck{border-radius:12px;padding:18px 16px;margin-bottom:14px;background:#161C24;}
+.hd{border:1.5px solid #00A8E8;}.cd{border:1.5px solid #F59E0B;}
+.deck-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.deck-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;}
+.hd .deck-name{color:#00A8E8;}.cd .deck-name{color:#F59E0B;}
+.clr{background:transparent;border:1px solid #2A3441;border-radius:6px;color:#6B7785;font-family:'DM Sans';font-size:11px;font-weight:700;padding:5px 11px;cursor:pointer;text-transform:uppercase;}
+.toggle{display:flex;gap:8px;margin-bottom:14px;}
+.tog-btn{flex:1;padding:10px;border-radius:8px;border:1px solid #2A3441;background:transparent;color:#6B7785;font-family:'DM Sans';font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;}
+.tog-btn.active-hd{background:rgba(0,168,232,0.15);border-color:#00A8E8;color:#00A8E8;}
+.tog-btn.active-cd{background:rgba(245,158,11,0.15);border-color:#F59E0B;color:#F59E0B;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:14px;}
+.field label{display:block;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#6B7785;margin-bottom:6px;font-weight:700;}
+.ibox{display:flex;align-items:center;background:#0D1117;border:1px solid #2A3441;border-radius:8px;}
+.ibox input{background:transparent;border:none;outline:none;color:#F5F2EC;font-family:'DM Sans';font-size:22px;font-weight:700;padding:10px;width:100%;}
+.ibox input::-webkit-inner-spin-button,.ibox input::-webkit-outer-spin-button{-webkit-appearance:none;}
+.ibox .u{font-size:11px;color:#6B7785;padding-right:10px;white-space:nowrap;font-weight:700;}
+.results{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.rbox{border-radius:10px;padding:14px;}
+.rbox .rl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#6B7785;margin-bottom:6px;font-weight:700;}
+.rbox .rv{font-size:34px;font-weight:900;}
+.rbox.cfm{background:#0D1117;border:1px solid #2A3441;}.rbox.cfm .rv{color:#F5F2EC;}
+.rbox.ls-h{background:rgba(0,168,232,0.12);border:1.5px solid #00A8E8;}.rbox.ls-h .rl{color:#00A8E8;}.rbox.ls-h .rv{color:#00A8E8;}
+.rbox.ls-c{background:rgba(245,158,11,0.12);border:1.5px solid #F59E0B;}.rbox.ls-c .rl{color:#F59E0B;}.rbox.ls-c .rv{color:#F59E0B;}
+.trace{background:#0A0E13;border-radius:8px;padding:10px 12px;font-size:12px;color:#6B7785;line-height:2.1;font-weight:500;}
+.trace b{color:#F5F2EC;font-weight:700;}
+.empty{border:1px dashed #2A3441;border-radius:8px;padding:24px;text-align:center;font-size:12px;color:#4A5562;font-weight:600;}
+.ref{background:#161C24;border:1px solid #2A3441;border-radius:10px;padding:12px 14px;margin-bottom:14px;}
+.ref .rt{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#6B7785;margin-bottom:8px;font-weight:700;}
+.ref p{font-size:12px;color:#6B7785;line-height:2.1;font-weight:500;}.ref b{color:#F5F2EC;font-weight:700;}
+.calc-display{background:#0A0E13;border-radius:12px;padding:18px;text-align:right;margin-bottom:12px;min-height:88px;display:flex;flex-direction:column;justify-content:flex-end;border:1px solid #2A3441;}
+.calc-expr{font-size:15px;color:#6B7785;font-weight:500;min-height:18px;word-wrap:break-word;}
+.calc-result{font-size:40px;color:#F5F2EC;font-weight:900;word-wrap:break-word;line-height:1.1;}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.calc-grid.g5{grid-template-columns:repeat(5,1fr);gap:6px;}
+.calc-status{display:flex;gap:8px;align-items:center;margin-bottom:8px;font-size:11px;font-weight:700;}
+.calc-status span{padding:4px 8px;border-radius:6px;background:#161C24;border:1px solid #2A3441;color:#6B7785;}
+.calc-status #cs-mem{color:#4A5562;}
+.calc-status #cs-mem.on{color:#00A8E8;border-color:#00A8E8;}
+.calc-status .cs-deg{margin-left:auto;cursor:pointer;color:#F59E0B;border-color:rgba(245,158,11,0.4);}
+.g5wide{grid-column:span 5;}
+.ck{padding:18px 0;border-radius:14px;border:none;font-family:'DM Sans';font-size:20px;font-weight:700;cursor:pointer;color:#F5F2EC;background:#2A3441;}
+.ck.sci{background:#1C2530;color:#5A8FB8;font-size:16px;}
+.ck.op{background:linear-gradient(135deg,#00A8E8,#0077B6);color:#fff;}
+.ck.fn{background:#3A4654;}.ck.eq{background:linear-gradient(135deg,#0077B6,#023E8A);color:#fff;}
+.ck.mem{background:#1C2530;color:#7FB5D5;font-size:13px;}
+.calc-grid.g5 .ck{padding:15px 0;font-size:17px;border-radius:12px;}
+.calc-grid.g5 .ck.sci,.calc-grid.g5 .ck.mem{font-size:13px;}
+.fcat{font-family:'Bebas Neue';font-size:16px;letter-spacing:2px;color:#00A8E8;margin:18px 0 10px;}.fcat:first-child{margin-top:0;}
+.fcard{background:#161C24;border:1px solid #2A3441;border-radius:10px;margin-bottom:10px;overflow:hidden;}
+.fhead{padding:13px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+.fhead .ftitle{font-size:13px;font-weight:700;color:#F5F2EC;}
+.fhead .fchev{color:#5A8FB8;font-size:13px;transition:transform 0.2s;}
+.fcard.open .fchev{transform:rotate(180deg);}
+.fbody{display:none;padding:0 14px 14px;}
+.fcard.open .fbody{display:block;}
+.fform{font-size:12px;color:#5A8FB8;font-weight:500;line-height:1.7;margin-bottom:10px;}
+.fnote{font-size:10.5px;color:#6B7785;margin-top:8px;line-height:1.6;}
+.fcalc-row{display:grid;gap:8px;margin-bottom:8px;}
+.fout{background:rgba(0,168,232,0.12);border:1.5px solid #00A8E8;border-radius:8px;padding:12px;text-align:center;}
+.fout .fol{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#00A8E8;font-weight:700;margin-bottom:4px;}
+.fout .fov{font-size:28px;font-weight:900;color:#00A8E8;}
+.htable{width:100%;border-collapse:collapse;margin-top:6px;}
+.htable th{font-size:9.5px;text-transform:uppercase;letter-spacing:0.5px;color:#5A8FB8;text-align:left;padding:5px 6px;border-bottom:1px solid #2A3441;font-weight:700;}
+.htable td{font-size:11px;color:#C5CDD6;padding:5px 6px;border-bottom:1px solid #1A222C;font-weight:500;}
+.htable td:first-child{color:#F5F2EC;font-weight:700;}
+.warn-note{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.4);border-radius:8px;padding:10px 12px;font-size:11px;color:#E5B567;line-height:1.6;font-weight:500;margin-bottom:14px;}
+.code{background:#0A0E13;border:1px solid #2A3441;border-radius:8px;padding:12px;font-family:'Courier New',monospace;font-size:11px;color:#9FD8F0;line-height:1.8;white-space:pre-wrap;margin:8px 0;overflow-x:auto;}
+.code .cm{color:#5A7585;}.code .kw{color:#F59E0B;}
+.ver-inline{text-align:center;margin-top:16px;}
+.ver{font-size:11px;color:#4A5562;font-weight:700;cursor:pointer;padding:6px 12px;border:1px solid #2A3441;border-radius:6px;display:inline-block;}
+.changelog{display:none;background:#161C24;border:1px solid #2A3441;border-radius:8px;padding:12px 14px;margin-top:10px;text-align:left;}
+.changelog.show{display:block;}
+.changelog h4{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#00A8E8;margin-bottom:8px;font-weight:700;}
+.changelog .cl{font-size:11px;color:#6B7785;line-height:1.9;font-weight:500;}.changelog .cl b{color:#F5F2EC;}
+.footer{text-align:center;margin-top:14px;font-size:9px;color:#3A4654;line-height:1.7;letter-spacing:0.5px;}
+.bottombar{position:fixed;bottom:0;left:0;right:0;background:#161C24;border-top:1px solid #2A3441;display:flex;padding:8px 8px max(env(safe-area-inset-bottom),8px);gap:4px;overflow-x:auto;}
+.btab{flex:1;min-width:60px;padding:8px 4px;border-radius:8px;border:none;background:transparent;color:#6B7785;font-family:'DM Sans';font-size:9px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.btab.active{color:#00A8E8;}.btab .icon{font-size:16px;}
+</style>
 </head>
 <body>
+<div class="accent-bar"></div>
+<div class="brand">
+<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="44" height="44" rx="8" fill="#0F172A"/><path d="M22 8L34 16V28L22 36L10 28V16L22 8Z" stroke="#00A8E8" stroke-width="1.5" fill="none"/><path d="M22 14V22M22 22L16 26M22 22L28 26" stroke="#1D4ED8" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="22" r="2.5" fill="#00A8E8"/></svg>
+<div class="brand-text"><div class="name">Vital Air Mechanical</div><div class="tag">HVAC · Field Tools</div></div>
+</div>
+<div class="subtitle" id="subtitle">Duct Flow Calc — Shortridge ADM-870C</div>
 
-  <div class="header">
-    <div class="sup">Shortridge ADM-870C</div>
-    <h1>Duct Flow Calc</h1>
-    <div class="sub">FPM × area(ft²) = CFM → L/s</div>
-  </div>
+<!-- DUCT -->
+<div class="page show" id="page-duct">
+<div class="deck hd"><div class="deck-top"><div class="deck-name">Hot Deck — HD</div><button class="clr" onclick="clr('hd')">clear</button></div><div class="toggle"><button class="tog-btn active-hd" id="hd-round-btn" onclick="setShape('hd','round')">● round</button><button class="tog-btn" id="hd-rect-btn" onclick="setShape('hd','rect')">▪ square</button></div><div id="hd-inputs"></div><div id="hd-out"><div class="empty">enter size + FPM</div></div></div>
+<div class="deck cd"><div class="deck-top"><div class="deck-name">Cold Deck — CD</div><button class="clr" onclick="clr('cd')">clear</button></div><div class="toggle"><button class="tog-btn active-cd" id="cd-round-btn" onclick="setShape('cd','round')">● round</button><button class="tog-btn" id="cd-rect-btn" onclick="setShape('cd','rect')">▪ square</button></div><div id="cd-inputs"></div><div id="cd-out"><div class="empty">enter size + FPM</div></div></div>
+<div class="ref"><div class="rt">formula</div><p><b>round</b> = π/4 × d² ÷ 144 · <b>square</b> = W×H ÷ 144<br><b>CFM</b> = FPM × area(ft²) · <b>L/s</b> = CFM × 0.4719</p></div>
+<div class="ver-inline"><div class="ver" onclick="toggleLog()">v4.0 ▾</div><div class="changelog" id="changelog"><h4>changelog</h4><div class="cl"><b>v4.0</b> — interactive formula calculators, fan belt formulas, Control BASIC crash course<br><b>v3.0</b> — scientific calc, formula sheet, ASHRAE 170, ICRA<br><b>v2.0</b> — Vital Air branding, square duct, calculator<br><b>v1.0</b> — round duct FPM → CFM → L/s</div></div></div>
+<div class="footer">VITAL AIR MECHANICAL INC. · 16815383 CANADA INC.<br>780-884-7490 · EDMONTON, ALBERTA</div>
+</div>
 
-  <div class="deck hd">
-    <div class="deck-top">
-      <div class="deck-name">Hot Deck — HD</div>
-      <button class="clr" onclick="clr('hd')">clear</button>
-    </div>
-    <div class="row">
-      <div class="field">
-        <label>Duct diameter</label>
-        <div class="ibox"><input id="hd-d" type="number" inputmode="decimal" placeholder="0" oninput="go('hd')"><span class="u">in</span></div>
-      </div>
-      <div class="field">
-        <label>Shortridge FPM</label>
-        <div class="ibox"><input id="hd-f" type="number" inputmode="decimal" placeholder="0" oninput="go('hd')"><span class="u">FPM</span></div>
-      </div>
-    </div>
-    <div id="hd-out"><div class="empty">enter diameter + FPM</div></div>
-  </div>
+<!-- SCI CALC -->
+<div class="page" id="page-calc">
+<div class="calc-status"><span id="cs-mem">M</span><span id="cs-x">x: —</span><span id="cs-y">y: —</span><span class="cs-deg" id="cs-deg" onclick="toggleDeg()">DEG</span></div>
+<div class="calc-display"><div class="calc-expr" id="calc-expr"></div><div class="calc-result" id="calc-result">0</div></div>
+<div class="calc-grid g5">
+<button class="ck sci" onclick="ck('sin')">sin</button><button class="ck sci" onclick="ck('cos')">cos</button><button class="ck sci" onclick="ck('tan')">tan</button><button class="ck sci" onclick="ck('ln')">ln</button><button class="ck sci" onclick="ck('log')">log</button>
+<button class="ck sci" onclick="ck('sqrt')">√</button><button class="ck sci" onclick="ck('cbrt')">∛</button><button class="ck sci" onclick="ck('sq')">x²</button><button class="ck sci" onclick="ck('cube')">x³</button><button class="ck sci" onclick="ck('pow')">xʸ</button>
+<button class="ck sci" onclick="ck('inv')">1/x</button><button class="ck sci" onclick="ck('pi')">π</button><button class="ck sci" onclick="ck('e')">e</button><button class="ck sci" onclick="ck('(')">(</button><button class="ck sci" onclick="ck(')')">)</button>
+<button class="ck mem" onclick="ck('MR')">MR</button><button class="ck mem" onclick="ck('M+')">M+</button><button class="ck mem" onclick="ck('M-')">M−</button><button class="ck mem" onclick="ck('MC')">MC</button><button class="ck fn" onclick="ck('AC')">AC</button>
+<button class="ck mem" onclick="ck('STOx')">STO x</button><button class="ck mem" onclick="ck('RCLx')">RCL x</button><button class="ck mem" onclick="ck('STOy')">STO y</button><button class="ck mem" onclick="ck('RCLy')">RCL y</button><button class="ck fn" onclick="ck('DEL')">⌫</button>
+<button class="ck" onclick="ck('7')">7</button><button class="ck" onclick="ck('8')">8</button><button class="ck" onclick="ck('9')">9</button><button class="ck op" onclick="ck('/')">÷</button><button class="ck op" onclick="ck('*')">×</button>
+<button class="ck" onclick="ck('4')">4</button><button class="ck" onclick="ck('5')">5</button><button class="ck" onclick="ck('6')">6</button><button class="ck op" onclick="ck('-')">−</button><button class="ck op" onclick="ck('+')">+</button>
+<button class="ck" onclick="ck('1')">1</button><button class="ck" onclick="ck('2')">2</button><button class="ck" onclick="ck('3')">3</button><button class="ck" onclick="ck('0')">0</button><button class="ck" onclick="ck('.')">.</button>
+<button class="ck eq g5wide" onclick="ck('=')">=</button>
+</div>
+<div class="footer" style="margin-top:18px">VITAL AIR MECHANICAL INC. · EDMONTON, AB</div>
+</div>
 
-  <div class="deck cd">
-    <div class="deck-top">
-      <div class="deck-name">Cold Deck — CD</div>
-      <button class="clr" onclick="clr('cd')">clear</button>
-    </div>
-    <div class="row">
-      <div class="field">
-        <label>Duct diameter</label>
-        <div class="ibox"><input id="cd-d" type="number" inputmode="decimal" placeholder="0" oninput="go('cd')"><span class="u">in</span></div>
-      </div>
-      <div class="field">
-        <label>Shortridge FPM</label>
-        <div class="ibox"><input id="cd-f" type="number" inputmode="decimal" placeholder="0" oninput="go('cd')"><span class="u">FPM</span></div>
-      </div>
-    </div>
-    <div id="cd-out"><div class="empty">enter diameter + FPM</div></div>
-  </div>
+<!-- FORMULAS (interactive) -->
+<div class="page" id="page-form">
+<div id="formula-list"></div>
+<div class="warn-note" style="margin-top:14px;margin-bottom:0">⚠ Reference/calculation aid only. Your facility's commissioned setpoints govern.</div>
+<div class="footer">VITAL AIR MECHANICAL INC. · EDMONTON, AB</div>
+</div>
 
-  <div class="ref">
-    <div class="rt">formula</div>
-    <p>
-      <b>area(ft²)</b> = π/4 × d(in)² ÷ 144<br>
-      <b>CFM</b> = FPM × area(ft²)<br>
-      <b>L/s</b> = CFM × 0.4719
-    </p>
-  </div>
+<!-- HOSPITAL ref -->
+<div class="page" id="page-hosp">
+<div class="warn-note">⚠ Reference only — ASHRAE 170-2025 / FGI. Your facility's commissioned setpoints always govern.</div>
+<div class="fcat">Room ACH + Pressure</div>
+<div class="ref"><table class="htable"><tr><th>Space</th><th>Min ACH</th><th>Pressure</th></tr><tr><td>Operating Room</td><td>20+</td><td>Positive</td></tr><tr><td>AII Isolation</td><td>12</td><td>Negative</td></tr><tr><td>Protective Env</td><td>12</td><td>Positive</td></tr><tr><td>AII Anteroom</td><td>10</td><td>per design</td></tr><tr><td>Pharmacy clean</td><td>USP 797/800</td><td>Positive*</td></tr><tr><td>Patient room</td><td>6</td><td>Neutral</td></tr></table><div class="fnote" style="font-size:10.5px;color:#6B7785;margin-top:8px">*Hazardous drug compounding = negative. Pressure differential ≥ 2.5 Pa (0.01" w.g.) between critical spaces. Turndown OK when unoccupied IF pressure relationship maintained.</div></div>
 
-  <script>
-    function f(v, d) { return (v == null || isNaN(v)) ? "—" : v.toFixed(d); }
+<div class="fcat">Filtration — by Space</div>
+<div class="ref"><table class="htable"><tr><th>Space</th><th>Bank 1</th><th>Bank 2</th></tr><tr><td>OR / C-section</td><td>MERV 7-8</td><td>MERV 16†</td></tr><tr><td>Class 3 imaging</td><td>MERV 7-8</td><td>MERV 16†</td></tr><tr><td>Protective Env (PE)</td><td>MERV 7-8</td><td>HEPA</td></tr><tr><td>Inpatient care</td><td>MERV 7-8</td><td>MERV 14</td></tr><tr><td>AII isolation</td><td>MERV 7-8</td><td>MERV 14</td></tr><tr><td>Sterile packing</td><td>MERV 7-8</td><td>MERV 14</td></tr><tr><td>General patient</td><td>MERV 13</td><td>—</td></tr><tr><td>Admin / support</td><td>MERV 8</td><td>—</td></tr></table><div class="fnote" style="font-size:10.5px;color:#6B7785;margin-top:8px">Two-bank system: Bank 1 = pre-filter (protects Bank 2 / extends life), Bank 2 = final. †OR orthopedic/transplant/neuro/burn = HEPA at the terminal device. HEPA = 99.97% @ 0.3 micron. Per ASHRAE 170-2021/2025 Table 6-4. Spec MERV-A ratings when ordering.</div></div>
 
-    function go(id) {
-      const d = parseFloat(document.getElementById(id+'-d').value);
-      const fpm = parseFloat(document.getElementById(id+'-f').value);
-      const out = document.getElementById(id+'-out');
-      const lsc = id === 'hd' ? 'ls-h' : 'ls-c';
+<div class="fcat">Filter Field Notes</div>
+<div class="ref"><div class="fnote" style="font-size:11px;color:#C5CDD6;line-height:1.9">• Typical 3-stage on critical AHU: MERV-7 pre → MERV-14 intermediate → HEPA final.<br>• Pre-filters protect HEPA service life — change on schedule.<br>• <b>Any filter bypass gap eliminates protection regardless of HEPA condition</b> — check gaskets/seals.<br>• OR: verify pressure differential AFTER filter change before returning room to service.<br>• Track filter ΔP — rising ΔP = loading = airflow drop. That's your PM trigger.</div></div>
+<div class="footer">VITAL AIR MECHANICAL INC. · EDMONTON, AB</div>
+</div>
 
-      if (!d || !fpm || d <= 0 || fpm <= 0) {
-        out.innerHTML = '<div class="empty">enter diameter + FPM</div>';
-        return;
-      }
-      const ain = Math.PI / 4 * d * d;
-      const aft = ain / 144;
-      const cfm = aft * fpm;
-      const ls  = cfm * 0.4719;
+<!-- ICRA -->
+<div class="page" id="page-icra">
+<div class="warn-note">⚠ ICRA 2.0 (ASHE/AHA) reference. Your IC team sets class &amp; permit. Class III–V need an IC permit before work.</div>
+<div class="fcat">Containment Classes</div>
+<div class="ref"><p style="font-size:12px;color:#5A8FB8;font-weight:600">Patient Risk (Low→Highest) × Project Type (A→D) = Class (I–V)</p><div class="fnote" style="font-size:10.5px;margin-top:6px">Construction/reno = Class III–V only. Higher class includes all lower-class controls.</div></div>
+<div class="fcard open"><div class="fhead" onclick="tog(this)"><div class="ftitle">Class I — Inspection / non-invasive</div><span class="fchev">▾</span></div><div class="fbody"><div class="fnote">Minimal dust. Replace displaced ceiling tile immediately.</div></div></div>
+<div class="fcard"><div class="fhead" onclick="tog(this)"><div class="ftitle">Class II — Small / standing practice</div><span class="fchev">▾</span></div><div class="fbody"><div class="fnote">Wall patch, access panels. Dust control, mist for cutting, seal doors, wipe surfaces. Not for construction.</div></div></div>
+<div class="fcard"><div class="fhead" onclick="tog(this)"><div class="ftitle">Class III — Permit ▲</div><span class="fchev">▾</span></div><div class="fbody"><div class="fnote">Sealed barriers + negative pressure HEPA. Isolate HVAC. <b>Shut down VAV serving work area before covering returns/supplies.</b> Sealed waste containers. Hold until IC + PM authorize removal.</div></div></div>
+<div class="fcard"><div class="fhead" onclick="tog(this)"><div class="ftitle">Class IV — Permit ▲▲</div><span class="fchev">▾</span></div><div class="fbody"><div class="fnote">Class III + anteroom, HEPA-vac personnel before exit, patients removed, high-risk stay out 1 hr. Isolate return AND supply diffusers.</div></div></div>
+<div class="fcard"><div class="fhead" onclick="tog(this)"><div class="ftitle">Class V — Highest risk ▲▲▲</div><span class="fchev">▾</span></div><div class="fbody"><div class="fnote">Procedural/invasive/sterile. Always containment barrier (NFPA 241). Full negative-pressure containment, anteroom, continuous monitoring.</div></div></div>
+<div class="fcat">Containment Pressure</div>
+<div class="ref"><p style="font-size:12px;color:#5A8FB8;font-weight:600">Alarm setpoint: −0.01 to −0.05" w.g. (−2.5 to −12 Pa)</p><div class="fnote" style="font-size:10.5px;margin-top:6px">Negative flow: entry → anteroom → work zone. Monitor/document daily. HEPA runs until finishes done, HVAC operational, PM authorizes removal.</div></div>
+<div class="footer">VITAL AIR MECHANICAL INC. · EDMONTON, AB</div>
+</div>
 
-      out.innerHTML = `
-        <div class="results">
-          <div class="rbox cfm"><div class="rl">CFM</div><div class="rv">${f(cfm,1)}</div></div>
-          <div class="rbox ${lsc}"><div class="rl">L/s</div><div class="rv">${f(ls,1)}</div></div>
-        </div>
-        <div class="trace">
-          area = π/4 × ${d}² ÷ 144 = <b>${f(ain,2)}</b> in² = <b>${f(aft,4)}</b> ft²<br>
-          CFM = <b>${f(aft,4)}</b> × <b>${fpm}</b> = <b>${f(cfm,1)}</b><br>
-          L/s = <b>${f(cfm,1)}</b> × 0.4719 = <b>${f(ls,1)}</b>
-        </div>`;
-    }
+<!-- CONTROL BASIC -->
+<div class="page" id="page-cb">
+<div class="warn-note">Reliable Controls · Control-BASIC crash course. Syntax varies slightly by controller/firmware — always check the actual program.</div>
+<div class="fcat">The Basics</div>
+<div class="ref"><div class="fnote" style="font-size:11.5px;color:#C5CDD6;line-height:1.8">Control BASIC runs in <b>programs</b> attached to a controller. Each program is lines of logic the controller scans top-to-bottom on a loop. You reference <b>points</b> (inputs, outputs, variables) and write conditional logic to control equipment.</div></div>
+<div class="fcat">Point Types</div>
+<div class="ref"><table class="htable"><tr><th>Type</th><th>Meaning</th></tr><tr><td>AI</td><td>Analog Input (sensor: temp, pressure)</td></tr><tr><td>AO</td><td>Analog Output (damper, valve 0–100%)</td></tr><tr><td>BI</td><td>Binary Input (switch, status)</td></tr><tr><td>BO</td><td>Binary Output (on/off relay)</td></tr><tr><td>AV</td><td>Analog Variable (setpoint, calc value)</td></tr><tr><td>BV</td><td>Binary Variable (flag, true/false)</td></tr></table></div>
+<div class="fcat">Core Syntax</div>
+<div class="ref"><div class="fnote" style="font-size:11px;margin-bottom:4px">IF / THEN logic:</div><div class="code"><span class="kw">IF</span> AI1 > 75 <span class="kw">THEN</span> BO1 = ON
+<span class="kw">IF</span> AI1 < 70 <span class="kw">THEN</span> BO1 = OFF</div>
+<div class="fnote" style="font-size:11px;margin:8px 0 4px">Setpoint + deadband (avoid short cycling):</div><div class="code"><span class="cm">REM cooling call w/ 2 deg deadband</span>
+<span class="kw">IF</span> SpaceTemp > (Setpoint + 1) <span class="kw">THEN</span> Cool = ON
+<span class="kw">IF</span> SpaceTemp < (Setpoint - 1) <span class="kw">THEN</span> Cool = OFF</div>
+<div class="fnote" style="font-size:11px;margin:8px 0 4px">Comments use REM:</div><div class="code"><span class="cm">REM this line is a comment</span></div></div>
 
-    function clr(id) {
-      document.getElementById(id+'-d').value = '';
-      document.getElementById(id+'-f').value = '';
-      document.getElementById(id+'-out').innerHTML = '<div class="empty">enter diameter + FPM</div>';
-    }
-  </script>
+<div class="fcat">Program Structure</div>
+<div class="ref"><div class="fnote" style="font-size:11px;color:#C5CDD6;line-height:1.9">• Every line starts with a <b>line number</b> (10, 20, 30…). Leave gaps to insert later.<br>• Controller scans top→bottom every cycle, then repeats.<br>• <b>KEYWORDS are UPPERCASE</b> by convention.<br>• Colon <b>:</b> puts multiple statements on one line.<br>• Underscores in point names: <b>AH01_FAN_CMD</b>.<br>• RC-Studio won't download a program with syntax errors. Press <b>F1</b> on any statement for its help.</div>
+<div class="code"><span class="cm">REM colon = multiple statements per line</span>
+20 <span class="kw">IF</span> SCHED1 <span class="kw">THEN</span> START FAN <span class="kw">ELSE</span> STOP FAN
+30 OPEN DAMPER : START LOOP1</div></div>
+
+<div class="fcat">Conditional Statements</div>
+<div class="ref"><table class="htable"><tr><th>Statement</th><th>Does</th></tr>
+<tr><td>IF…THEN</td><td>Run action if condition true</td></tr>
+<tr><td>IF…THEN…ELSE</td><td>Run one action or the other</td></tr>
+<tr><td>IF+ …THEN</td><td>Trigger on RISING edge (false→true)</td></tr>
+<tr><td>IF− …THEN</td><td>Trigger on FALLING edge (true→false)</td></tr>
+<tr><td>GOTO n</td><td>Jump to line number n</td></tr>
+<tr><td>GOSUB n</td><td>Jump to subroutine, RETURN comes back</td></tr>
+<tr><td>RETURN</td><td>Return from a GOSUB</td></tr>
+<tr><td>FOR…NEXT</td><td>Loop a fixed number of times</td></tr>
+<tr><td>END</td><td>Stop running the program this scan</td></tr></table>
+<div class="fnote" style="font-size:10.5px;margin-top:8px">IF+ / IF− are the edge-trigger operators — fire once on the transition, not every scan. Use them to reset a PID integral or pulse an event. Example: <b>IF+ MODE_OCC THEN START LOOP1</b> resets the loop when the space goes occupied.</div></div>
+
+<div class="fcat">Equipment / Output Commands</div>
+<div class="ref"><table class="htable"><tr><th>Cmd</th><th>Does</th></tr>
+<tr><td>START pt</td><td>Turn on / enable (also resets a LOOP integral)</td></tr>
+<tr><td>STOP pt</td><td>Turn off / disable a point or LOOP</td></tr>
+<tr><td>OPEN pt</td><td>Drive output open (e.g. damper/valve)</td></tr>
+<tr><td>CLOSE pt</td><td>Drive output closed</td></tr>
+<tr><td>pt = ON / OFF</td><td>Set a binary point on or off</td></tr>
+<tr><td>pt = value</td><td>Write an analog value / setpoint</td></tr>
+<tr><td>LOOP1 = 22</td><td>Writes the loop SETPOINT (not output)</td></tr></table></div>
+
+<div class="fcat">Operators</div>
+<div class="ref"><table class="htable"><tr><th>Type</th><th>Operators</th></tr>
+<tr><td>Compare</td><td>= &nbsp; &lt; &nbsp; &gt; &nbsp; &lt;= &nbsp; &gt;= &nbsp; &lt;&gt;</td></tr>
+<tr><td>Math</td><td>+ &nbsp; − &nbsp; * &nbsp; / &nbsp; ^ (power)</td></tr>
+<tr><td>Logic</td><td>AND &nbsp; OR &nbsp; NOT</td></tr>
+<tr><td>Constants</td><td>ON OFF &nbsp; TRUE FALSE &nbsp; OPEN CLOSED</td></tr></table>
+<div class="code"><span class="kw">IF</span> Temp &gt; 75 <span class="kw">AND</span> <span class="kw">NOT</span> MODE_OCC <span class="kw">THEN</span> STOP FAN</div></div>
+
+<div class="fcat">Math &amp; Logic Functions</div>
+<div class="ref"><table class="htable"><tr><th>Fn</th><th>Returns</th></tr>
+<tr><td>SQR(x)</td><td>Square root (flow = K × SQR(VP))</td></tr>
+<tr><td>ABS(x)</td><td>Absolute value</td></tr>
+<tr><td>MIN / MAX</td><td>Smallest / largest of a group</td></tr>
+<tr><td>AVG</td><td>Average of a group of points</td></tr>
+<tr><td>SUM</td><td>Total of a group</td></tr>
+<tr><td>INT(x)</td><td>Integer part</td></tr>
+<tr><td>ROOT / EXP / LOG</td><td>Root, exponent, logarithm</td></tr></table></div>
+
+<div class="fcat">Time &amp; Calendar</div>
+<div class="ref"><table class="htable"><tr><th>Object</th><th>Is</th></tr>
+<tr><td>TIME</td><td>Current time of day</td></tr>
+<tr><td>DAY / DATE</td><td>Day of week / date</td></tr>
+<tr><td>HOUR / MINUTE</td><td>Current hour / minute</td></tr>
+<tr><td>SCHEDULE (WS)</td><td>Weekly schedule object → on/off</td></tr>
+<tr><td>HOLIDAY</td><td>Holiday calendar flag</td></tr>
+<tr><td>TIMER / ONDELAY</td><td>Delay-on / delay-off timing</td></tr></table>
+<div class="code"><span class="cm">REM run fan only during occupied schedule</span>
+<span class="kw">IF</span> WS1 <span class="kw">THEN</span> START AHU_FAN <span class="kw">ELSE</span> STOP AHU_FAN</div></div>
+
+<div class="fcat">Control Loops (PID)</div>
+<div class="ref"><div class="fnote" style="font-size:11px;color:#C5CDD6;line-height:1.8">Loops are defined in their own section; your program just references them.</div>
+<table class="htable"><tr><th>Cmd</th><th>Does</th></tr>
+<tr><td>START LOOPn</td><td>Run loop / reset integral windup</td></tr>
+<tr><td>STOP LOOPn</td><td>Freeze the loop</td></tr>
+<tr><td>LOOPn = sp</td><td>Set the loop's setpoint</td></tr>
+<tr><td>CONPROP</td><td>Set proportional band dynamically</td></tr>
+<tr><td>CONRESET</td><td>Set integral reset dynamically</td></tr>
+<tr><td>CONRATE</td><td>Set derivative rate dynamically</td></tr></table>
+<div class="fnote" style="font-size:10.5px;margin-top:8px">Tip: don't START a loop every scan — it keeps resetting the integral and it'll never build proper corrective action. START it once on the occupied transition with IF+.</div></div>
+
+<div class="fcat">Trend / Alarm</div>
+<div class="ref"><div class="fnote" style="font-size:11px;color:#C5CDD6;line-height:1.8">• Trend logs &amp; alarms are configured as objects, then referenced.<br>• Alarm priorities can pop up, email, or link to a graphic.<br>• COV (Change of Value) logging available on single trend logs.</div></div>
+
+<div class="fcat">Common Functions</div>
+<div class="ref"><table class="htable"><tr><th>Cmd</th><th>Does</th></tr><tr><td>PID</td><td>Loop control (maintain setpoint)</td></tr><tr><td>SCHEDULE</td><td>Time-of-day on/off</td></tr><tr><td>RAMP</td><td>Gradual change over time</td></tr><tr><td>AVG / MIN / MAX</td><td>Math on point groups</td></tr><tr><td>RUNTIME</td><td>Track equipment hours</td></tr><tr><td>GOTO / GOSUB</td><td>Jump to line / subroutine</td></tr></table></div>
+<div class="fcat">VAV Box Example</div>
+<div class="ref"><div class="code"><span class="cm">REM dual-duct VAV — pick deck by demand</span>
+<span class="kw">IF</span> SpaceTemp > ClgSP <span class="kw">THEN</span> ClgFlow = PID(...)
+<span class="kw">IF</span> SpaceTemp < HtgSP <span class="kw">THEN</span> HtgFlow = PID(...)
+<span class="cm">REM K-factor converts sensor dP to flow</span>
+ActualFlow = Kfactor * SQR(VelPressure)</div><div class="fnote">That K × √VP is the same correction-factor math from the Duct tab — it's literally what the controller runs.</div></div>
+<div class="fcat">Field Tips</div>
+<div class="ref"><div class="fnote" style="font-size:11px;color:#C5CDD6;line-height:1.9">• Never edit a live program without backing up the original first.<br>• Watch for <b>deadband</b> — too tight = short cycling.<br>• Manual/override commands expire — confirm point returns to AUTO.<br>• On PM shutdowns, check the program isn't holding a value that breaks room pressure.<br>• Comment every change with REM + your initials + date.</div></div>
+<div class="footer">VITAL AIR MECHANICAL INC. · EDMONTON, AB</div>
+</div>
+
+<div class="bottombar">
+<button class="btab active" id="tab-duct" onclick="showPage('duct')"><span class="icon">▦</span>Duct</button>
+<button class="btab" id="tab-calc" onclick="showPage('calc')"><span class="icon">🔢</span>Calc</button>
+<button class="btab" id="tab-form" onclick="showPage('form')"><span class="icon">📋</span>Formulas</button>
+<button class="btab" id="tab-hosp" onclick="showPage('hosp')"><span class="icon">🏥</span>Hosp</button>
+<button class="btab" id="tab-icra" onclick="showPage('icra')"><span class="icon">🛡</span>ICRA</button>
+<button class="btab" id="tab-cb" onclick="showPage('cb')"><span class="icon">⌨</span>BASIC</button>
+</div>
+
+<script>
+const shapes={hd:'round',cd:'round'};
+const subs={duct:'Duct Flow Calc — Shortridge ADM-870C',calc:'Scientific Calculator',form:'HVAC Formula Calculators',hosp:'Hospital Reference — ASHRAE 170',icra:'ICRA Containment Reference',cb:'Control BASIC Crash Course'};
+function f(v,d){return (v==null||isNaN(v))?"—":v.toFixed(d);}
+function showPage(p){['duct','calc','form','hosp','icra','cb'].forEach(x=>{document.getElementById('page-'+x).className='page'+(x===p?' show':'');document.getElementById('tab-'+x).className='btab'+(x===p?' active':'');});document.getElementById('subtitle').textContent=subs[p];}
+function toggleLog(){const c=document.getElementById('changelog');c.className='changelog'+(c.className.includes('show')?'':' show');}
+function tog(el){const c=el.parentElement;c.className='fcard'+(c.className.includes('open')?'':' open');}
+
+function setShape(id,shape){shapes[id]=shape;const ac=id==='hd'?'active-hd':'active-cd';document.getElementById(id+'-round-btn').className='tog-btn'+(shape==='round'?' '+ac:'');document.getElementById(id+'-rect-btn').className='tog-btn'+(shape==='rect'?' '+ac:'');const fpmVal=(document.getElementById(id+'-f')||{}).value||'';if(shape==='round'){document.getElementById(id+'-inputs').innerHTML=`<div class="row"><div class="field"><label>Diameter</label><div class="ibox"><input id="${id}-d" type="number" inputmode="decimal" placeholder="0" oninput="go('${id}')"><span class="u">in</span></div></div><div class="field"><label>Shortridge FPM</label><div class="ibox"><input id="${id}-f" type="number" inputmode="decimal" placeholder="0" value="${fpmVal}" oninput="go('${id}')"><span class="u">FPM</span></div></div></div>`;}else{document.getElementById(id+'-inputs').innerHTML=`<div class="row3"><div class="field"><label>Width</label><div class="ibox"><input id="${id}-w" type="number" inputmode="decimal" placeholder="0" oninput="go('${id}')"><span class="u">in</span></div></div><div class="field"><label>Height</label><div class="ibox"><input id="${id}-h" type="number" inputmode="decimal" placeholder="0" oninput="go('${id}')"><span class="u">in</span></div></div><div class="field"><label>FPM</label><div class="ibox"><input id="${id}-f" type="number" inputmode="decimal" placeholder="0" value="${fpmVal}" oninput="go('${id}')"><span class="u">FPM</span></div></div></div>`;}document.getElementById(id+'-out').innerHTML='<div class="empty">enter size + FPM</div>';}
+function go(id){const fpm=parseFloat((document.getElementById(id+'-f')||{}).value||0);const out=document.getElementById(id+'-out');const lsc=id==='hd'?'ls-h':'ls-c';let ain,aft,lbl;if(shapes[id]==='round'){const d=parseFloat((document.getElementById(id+'-d')||{}).value||0);if(!d||!fpm||d<=0||fpm<=0){out.innerHTML='<div class="empty">enter size + FPM</div>';return;}ain=Math.PI/4*d*d;aft=ain/144;lbl=`π/4 × ${d}² ÷ 144 = <b>${f(ain,2)}</b> in²`;}else{const w=parseFloat((document.getElementById(id+'-w')||{}).value||0),h=parseFloat((document.getElementById(id+'-h')||{}).value||0);if(!w||!h||!fpm||w<=0||h<=0||fpm<=0){out.innerHTML='<div class="empty">enter size + FPM</div>';return;}ain=w*h;aft=ain/144;lbl=`${w} × ${h} ÷ 144 = <b>${f(ain,2)}</b> in²`;}const cfm=aft*fpm,ls=cfm*0.4719;out.innerHTML=`<div class="results"><div class="rbox cfm"><div class="rl">CFM</div><div class="rv">${f(cfm,1)}</div></div><div class="rbox ${lsc}"><div class="rl">L/s</div><div class="rv">${f(ls,1)}</div></div></div><div class="trace">area = ${lbl} = <b>${f(aft,4)}</b> ft²<br>CFM = <b>${f(aft,4)}</b> × <b>${fpm}</b> = <b>${f(cfm,1)}</b><br>L/s = <b>${f(cfm,1)}</b> × 0.4719 = <b>${f(ls,1)}</b></div>`;}
+function clr(id){setShape(id,'round');document.getElementById(id+'-out').innerHTML='<div class="empty">enter size + FPM</div>';}
+
+// scientific calc
+let expr='', memVal=0, xVal=null, yVal=null, degMode=true;
+function disp(s){ return s.replace(/\*\*/g,'^').replace(/\*/g,'×').replace(/\//g,'÷').replace(/Math\.sqrt/g,'√').replace(/Math\.cbrt/g,'∛').replace(/Math\.sin/g,'sin').replace(/Math\.cos/g,'cos').replace(/Math\.tan/g,'tan').replace(/Math\.log10/g,'log').replace(/Math\.log/g,'ln').replace(/Math\.PI/g,'π').replace(/\bD\(/g,'').replace(/Math\.E/g,'e'); }
+function refresh(){ document.getElementById('calc-result').textContent = expr===''?'0':disp(expr); updateStatus(); }
+function updateStatus(){
+  document.getElementById('cs-mem').className = memVal!==0?'on':'';
+  document.getElementById('cs-x').textContent = 'x: '+(xVal===null?'—':xVal);
+  document.getElementById('cs-y').textContent = 'y: '+(yVal===null?'—':yVal);
+  document.getElementById('cs-deg').textContent = degMode?'DEG':'RAD';
+}
+function toggleDeg(){ degMode=!degMode; updateStatus(); }
+function curVal(){ try{ return evalExpr(); }catch(e){ return null; } }
+function evalExpr(){
+  let e = expr.replace(/×/g,'*').replace(/÷/g,'/').replace(/π/g,'Math.PI');
+  // D() wraps trig args to honor DEG/RAD
+  let r = Function('"use strict"; const D=function(a){return '+(degMode?'a*Math.PI/180':'a')+';}; return ('+e+')')();
+  return Math.round(r*1e10)/1e10;
+}
+function ck(k){
+  switch(k){
+    case 'AC': expr=''; document.getElementById('calc-expr').textContent=''; refresh(); return;
+    case 'DEL': expr=expr.slice(0,-1); refresh(); return;
+    case '=': try{ let r=evalExpr(); document.getElementById('calc-expr').textContent=disp(expr)+' ='; expr=r.toString(); refresh(); }catch(e){ document.getElementById('calc-result').textContent='Error'; expr=''; } return;
+    case 'sqrt': expr='Math.sqrt('+(expr||'0')+')'; refresh(); return;
+    case 'cbrt': expr='Math.cbrt('+(expr||'0')+')'; refresh(); return;
+    case 'sq': expr='('+(expr||'0')+')**2'; refresh(); return;
+    case 'cube': expr='('+(expr||'0')+')**3'; refresh(); return;
+    case 'inv': expr='1/('+(expr||'0')+')'; refresh(); return;
+    case 'pow': expr+='**'; refresh(); return;
+    case 'pi': expr+='π'; refresh(); return;
+    case 'e': expr+='Math.E'; refresh(); return;
+    case 'sin': expr+='Math.sin(D('; refresh(); return;
+    case 'cos': expr+='Math.cos(D('; refresh(); return;
+    case 'tan': expr+='Math.tan(D('; refresh(); return;
+    case 'ln': expr+='Math.log('; refresh(); return;
+    case 'log': expr+='Math.log10('; refresh(); return;
+    case 'MC': memVal=0; updateStatus(); return;
+    case 'MR': expr+=memVal.toString(); refresh(); return;
+    case 'M+': { let v=curVal(); if(v!==null) memVal+=v; updateStatus(); return; }
+    case 'M-': { let v=curVal(); if(v!==null) memVal-=v; updateStatus(); return; }
+    case 'STOx': { let v=curVal(); if(v!==null) xVal=v; updateStatus(); return; }
+    case 'STOy': { let v=curVal(); if(v!==null) yVal=v; updateStatus(); return; }
+    case 'RCLx': if(xVal!==null){ expr+=xVal.toString(); refresh(); } return;
+    case 'RCLy': if(yVal!==null){ expr+=yVal.toString(); refresh(); } return;
+    default: expr+=k; refresh(); return;
+  }
+}
+
+// ===== interactive formulas =====
+const formulas=[
+ {cat:'Airflow',items:[
+   {t:'CFM ⟷ L/s',form:'L/s = CFM × 0.4719',in:[{id:'cfm',l:'CFM',u:'CFM'}],out:r=>['L/s',(r.cfm*0.4719).toFixed(1)]},
+   {t:'L/s → CFM',form:'CFM = L/s × 2.119',in:[{id:'ls',l:'L/s',u:'L/s'}],out:r=>['CFM',(r.ls*2.119).toFixed(1)]},
+   {t:'Velocity → CFM',form:'CFM = FPM × area(ft²)',in:[{id:'fpm',l:'Velocity',u:'FPM'},{id:'a',l:'Area',u:'ft²'}],out:r=>['CFM',(r.fpm*r.a).toFixed(1)]},
+   {t:'Round duct area',form:'area = π/4 × d² ÷ 144',in:[{id:'d',l:'Diameter',u:'in'}],out:r=>['ft²',(Math.PI/4*r.d*r.d/144).toFixed(4)]},
+   {t:'Rect duct area',form:'area = W × H ÷ 144',in:[{id:'w',l:'Width',u:'in'},{id:'h',l:'Height',u:'in'}],out:r=>['ft²',(r.w*r.h/144).toFixed(4)]},
+   {t:'Velocity pressure (Pa)',form:'V(m/s) = 1.414 × √VP',in:[{id:'vp',l:'VP',u:'Pa'}],out:r=>['m/s',(1.414*Math.sqrt(r.vp)).toFixed(2)]},
+ ]},
+ {cat:'Air Changes (ACH)',items:[
+   {t:'ACH from CFM',form:'ACH = (CFM × 60) ÷ volume',in:[{id:'cfm',l:'CFM',u:'CFM'},{id:'v',l:'Room vol',u:'ft³'}],out:r=>['ACH',(r.cfm*60/r.v).toFixed(1)]},
+   {t:'CFM for target ACH',form:'CFM = (ACH × vol) ÷ 60',in:[{id:'ach',l:'Target ACH',u:''},{id:'v',l:'Room vol',u:'ft³'}],out:r=>['CFM',(r.ach*r.v/60).toFixed(0)]},
+ ]},
+ {cat:'Heat',items:[
+   {t:'Sensible heat',form:'BTU/h = 1.08 × CFM × ΔT',in:[{id:'cfm',l:'CFM',u:'CFM'},{id:'dt',l:'ΔT',u:'°F'}],out:r=>['BTU/h',(1.08*r.cfm*r.dt).toFixed(0)]},
+   {t:'CFM from sensible',form:'CFM = BTU/h ÷ (1.08 × ΔT)',in:[{id:'btu',l:'BTU/h',u:''},{id:'dt',l:'ΔT',u:'°F'}],out:r=>['CFM',(r.btu/(1.08*r.dt)).toFixed(0)]},
+   {t:'Total heat',form:'BTU/h = 4.5 × CFM × Δh',in:[{id:'cfm',l:'CFM',u:'CFM'},{id:'dh',l:'Δenthalpy',u:'BTU/lb'}],out:r=>['BTU/h',(4.5*r.cfm*r.dh).toFixed(0)]},
+   {t:'Latent heat',form:'BTU/h = 0.68 × CFM × ΔGr',in:[{id:'cfm',l:'CFM',u:'CFM'},{id:'gr',l:'Δgrains',u:'gr'}],out:r=>['BTU/h',(0.68*r.cfm*r.gr).toFixed(0)]},
+   {t:'Tons of cooling',form:'tons = BTU/h ÷ 12000',in:[{id:'btu',l:'BTU/h',u:''}],out:r=>['tons',(r.btu/12000).toFixed(2)]},
+ ]},
+ {cat:'Fan Laws',items:[
+   {t:'CFM from RPM change',form:'CFM₂ = CFM₁ × (RPM₂/RPM₁)',in:[{id:'c1',l:'CFM₁',u:''},{id:'r1',l:'RPM₁',u:''},{id:'r2',l:'RPM₂',u:''}],out:r=>['CFM₂',(r.c1*r.r2/r.r1).toFixed(0)]},
+   {t:'Static pressure from RPM',form:'SP₂ = SP₁ × (RPM₂/RPM₁)²',in:[{id:'s1',l:'SP₁',u:'"wg'},{id:'r1',l:'RPM₁',u:''},{id:'r2',l:'RPM₂',u:''}],out:r=>['SP₂',(r.s1*Math.pow(r.r2/r.r1,2)).toFixed(3)]},
+   {t:'HP from RPM',form:'HP₂ = HP₁ × (RPM₂/RPM₁)³',in:[{id:'h1',l:'HP₁',u:'HP'},{id:'r1',l:'RPM₁',u:''},{id:'r2',l:'RPM₂',u:''}],out:r=>['HP₂',(r.h1*Math.pow(r.r2/r.r1,3)).toFixed(2)]},
+ ]},
+ {cat:'Fan Belts & Sheaves',items:[
+   {t:'Fan RPM from sheaves',form:'FanRPM = MotorRPM × (motorØ ÷ fanØ)',in:[{id:'mr',l:'Motor RPM',u:''},{id:'md',l:'Motor sheave Ø',u:'in'},{id:'fd',l:'Fan sheave Ø',u:'in'}],out:r=>['Fan RPM',(r.mr*r.md/r.fd).toFixed(0)]},
+   {t:'Motor sheave Ø needed',form:'motorØ = fanØ × (fanRPM ÷ motorRPM)',in:[{id:'fd',l:'Fan sheave Ø',u:'in'},{id:'fr',l:'Target fan RPM',u:''},{id:'mr',l:'Motor RPM',u:''}],out:r=>['Motor Ø',(r.fd*r.fr/r.mr).toFixed(2)]},
+   {t:'Belt length (approx)',form:'L = 2C + 1.57(D+d) + (D−d)²/4C',in:[{id:'c',l:'Center dist C',u:'in'},{id:'D',l:'Large Ø',u:'in'},{id:'d',l:'Small Ø',u:'in'}],out:r=>['Belt L',(2*r.c+1.57*(r.D+r.d)+Math.pow(r.D-r.d,2)/(4*r.c)).toFixed(1)]},
+   {t:'Belt speed (FPM)',form:'FPM = π × Ø × RPM ÷ 12',in:[{id:'dia',l:'Sheave Ø',u:'in'},{id:'rpm',l:'RPM',u:''}],out:r=>['Belt FPM',(Math.PI*r.dia*r.rpm/12).toFixed(0)]},
+ ]},
+ {cat:'Conversions',items:[
+   {t:'°F → °C',form:'°C = (°F − 32) × 5/9',in:[{id:'f',l:'°F',u:'°F'}],out:r=>['°C',((r.f-32)*5/9).toFixed(1)]},
+   {t:'°C → °F',form:'°F = (°C × 9/5) + 32',in:[{id:'c',l:'°C',u:'°C'}],out:r=>['°F',((r.c*9/5)+32).toFixed(1)]},
+   {t:'in w.g. → Pa',form:'Pa = inWG × 249',in:[{id:'wg',l:'in w.g.',u:'"wg'}],out:r=>['Pa',(r.wg*249).toFixed(1)]},
+   {t:'Pa → in w.g.',form:'inWG = Pa ÷ 249',in:[{id:'pa',l:'Pa',u:'Pa'}],out:r=>['in w.g.',(r.pa/249).toFixed(4)]},
+   {t:'kW → BTU/h',form:'BTU/h = kW × 3412',in:[{id:'kw',l:'kW',u:'kW'}],out:r=>['BTU/h',(r.kw*3412).toFixed(0)]},
+ ]},
+];
+
+function buildFormulas(){
+  let html='';
+  formulas.forEach((cat,ci)=>{
+    html+=`<div class="fcat">${cat.cat}</div>`;
+    cat.items.forEach((it,ii)=>{
+      const fid=`f${ci}_${ii}`;
+      let inputs='';
+      it.in.forEach(inp=>{ inputs+=`<div class="field"><label>${inp.l}</label><div class="ibox"><input id="${fid}_${inp.id}" type="number" inputmode="decimal" placeholder="0" oninput="calcF(${ci},${ii})"><span class="u">${inp.u}</span></div></div>`; });
+      const cols = it.in.length>=3?'1fr 1fr 1fr':it.in.length===2?'1fr 1fr':'1fr';
+      html+=`<div class="fcard"><div class="fhead" onclick="tog(this)"><div class="ftitle">${it.t}</div><span class="fchev">▾</span></div><div class="fbody"><div class="fform">${it.form}</div><div class="fcalc-row" style="grid-template-columns:${cols}">${inputs}</div><div class="fout" id="${fid}_out"><div class="fol">result</div><div class="fov">—</div></div></div></div>`;
+    });
+  });
+  document.getElementById('formula-list').innerHTML=html;
+}
+function calcF(ci,ii){
+  const it=formulas[ci].items[ii]; const fid=`f${ci}_${ii}`;
+  const vals={}; let ok=true;
+  it.in.forEach(inp=>{ const v=parseFloat(document.getElementById(`${fid}_${inp.id}`).value); if(isNaN(v)){ok=false;} vals[inp.id]=v; });
+  const out=document.getElementById(`${fid}_out`);
+  if(!ok){ out.innerHTML='<div class="fol">result</div><div class="fov">—</div>'; return; }
+  const [label,val]=it.out(vals);
+  out.innerHTML=`<div class="fol">${label}</div><div class="fov">${val}</div>`;
+}
+
+setShape('hd','round'); setShape('cd','round'); buildFormulas(); updateStatus();
+</script>
 </body>
 </html>
