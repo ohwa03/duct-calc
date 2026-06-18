@@ -59,6 +59,28 @@ body{background:#0D1117;color:#F5F2EC;font-family:'DM Sans',sans-serif;padding:m
 .calc-status #cs-mem.on{color:#00A8E8;border-color:#00A8E8;}
 .calc-status .cs-deg{margin-left:auto;cursor:pointer;color:#F59E0B;border-color:rgba(245,158,11,0.4);}
 .g5wide{grid-column:span 5;}
+.duseg{flex:1;padding:9px;border-radius:8px;border:1px solid #2A3441;background:transparent;color:#6B7785;font-family:'DM Sans';font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;cursor:pointer;}
+.duseg.on{background:rgba(0,168,232,0.15);border-color:#00A8E8;color:#00A8E8;}
+.savebtn{width:100%;margin-top:10px;padding:11px;border-radius:8px;border:1px dashed #00A8E8;background:rgba(0,168,232,0.08);color:#00A8E8;font-family:'DM Sans';font-size:12px;font-weight:700;cursor:pointer;letter-spacing:0.5px;}
+.savebtn:active{background:rgba(0,168,232,0.2);}
+.histrow{background:#161C24;border:1px solid #2A3441;border-radius:10px;padding:12px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.histrow .hmain{flex:1;}
+.histrow .htop{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.histrow .hdeck{font-size:10px;font-weight:900;padding:2px 7px;border-radius:4px;letter-spacing:1px;}
+.histrow .hdeck.HD{background:rgba(0,168,232,0.2);color:#00A8E8;}
+.histrow .hdeck.CD{background:rgba(245,158,11,0.2);color:#F59E0B;}
+.histrow .hlabel{font-size:13px;font-weight:700;color:#F5F2EC;}
+.histrow .hvals{font-size:12px;color:#7FB5D5;font-weight:600;line-height:1.7;}
+.histrow .hvals b{color:#F5F2EC;}
+.histrow .htime{font-size:9px;color:#4A5562;margin-top:3px;}
+.histrow .hdel{background:transparent;border:none;color:#6B7785;font-size:18px;cursor:pointer;padding:0 4px;line-height:1;}
+.histempty{border:1px dashed #2A3441;border-radius:10px;padding:30px;text-align:center;font-size:12px;color:#4A5562;font-weight:600;}
+.urow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #1A222C;}
+.urow:last-child{border-bottom:none;}
+.ulab{font-size:13px;font-weight:900;color:#00A8E8;width:54px;flex-shrink:0;}
+.uinp{flex:1;background:#0D1117;border:1px solid #2A3441;border-radius:6px;color:#F5F2EC;font-family:'DM Sans';font-size:17px;font-weight:700;padding:8px 10px;outline:none;min-width:0;}
+.uinp::-webkit-inner-spin-button,.uinp::-webkit-outer-spin-button{-webkit-appearance:none;}
+.udesc{font-size:10px;color:#6B7785;width:74px;flex-shrink:0;font-weight:600;}
 .ck{padding:18px 0;border-radius:14px;border:none;font-family:'DM Sans';font-size:20px;font-weight:700;cursor:pointer;color:#F5F2EC;background:#2A3441;}
 .ck.sci{background:#1C2530;color:#5A8FB8;font-size:16px;}
 .ck.op{background:linear-gradient(135deg,#00A8E8,#0077B6);color:#fff;}
@@ -109,11 +131,60 @@ body{background:#0D1117;color:#F5F2EC;font-family:'DM Sans',sans-serif;padding:m
 
 <!-- DUCT -->
 <div class="page show" id="page-duct">
+<div style="margin-bottom:14px"><div class="field" style="margin:0"><label style="display:block;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#6B7785;margin-bottom:6px;font-weight:700">Box / Room label (optional)</label><div class="ibox" style="display:flex;align-items:center;background:#0D1117;border:1px solid #2A3441;border-radius:8px"><input id="boxlabel" type="text" placeholder="e.g. VAV-3 Rm 214" style="background:transparent;border:none;outline:none;color:#F5F2EC;font-family:'DM Sans';font-size:16px;font-weight:700;padding:10px;width:100%"></div></div></div>
 <div class="deck hd"><div class="deck-top"><div class="deck-name">Hot Deck — HD</div><button class="clr" onclick="clr('hd')">clear</button></div><div class="toggle"><button class="tog-btn active-hd" id="hd-round-btn" onclick="setShape('hd','round')">● round</button><button class="tog-btn" id="hd-rect-btn" onclick="setShape('hd','rect')">▪ square</button></div><div id="hd-inputs"></div><div id="hd-out"><div class="empty">enter size + FPM</div></div></div>
 <div class="deck cd"><div class="deck-top"><div class="deck-name">Cold Deck — CD</div><button class="clr" onclick="clr('cd')">clear</button></div><div class="toggle"><button class="tog-btn active-cd" id="cd-round-btn" onclick="setShape('cd','round')">● round</button><button class="tog-btn" id="cd-rect-btn" onclick="setShape('cd','rect')">▪ square</button></div><div id="cd-inputs"></div><div id="cd-out"><div class="empty">enter size + FPM</div></div></div>
 <div class="ref"><div class="rt">formula</div><p><b>round</b> = π/4 × d² ÷ 144 · <b>square</b> = W×H ÷ 144<br><b>CFM</b> = FPM × area(ft²) · <b>L/s</b> = CFM × 0.4719</p></div>
-<div class="ver-inline"><div class="ver" onclick="toggleLog()">v4.0 ▾</div><div class="changelog" id="changelog"><h4>changelog</h4><div class="cl"><b>v4.0</b> — interactive formula calculators, fan belt formulas, Control BASIC crash course<br><b>v3.0</b> — scientific calc, formula sheet, ASHRAE 170, ICRA<br><b>v2.0</b> — Vital Air branding, square duct, calculator<br><b>v1.0</b> — round duct FPM → CFM → L/s</div></div></div>
+<div class="ver-inline"><div class="ver" onclick="toggleLog()">v5.0 ▾</div><div class="changelog" id="changelog"><h4>changelog</h4><div class="cl"><b>v5.0</b> — digital ductulator (SMACNA-verified), density/mixed-air/Cv/BHP/sheave formulas, velocity tables<br><b>v4.0</b> — interactive formula calculators, fan belt formulas, Control BASIC crash course<br><b>v3.0</b> — scientific calc, formula sheet, ASHRAE 170, ICRA<br><b>v2.0</b> — Vital Air branding, square duct, calculator<br><b>v1.0</b> — round duct FPM → CFM → L/s</div></div></div>
 <div class="footer">VITAL AIR MECHANICAL INC. · 16815383 CANADA INC.<br>780-884-7490 · EDMONTON, ALBERTA</div>
+</div>
+
+<!-- DUCTULATOR -->
+<div class="page" id="page-duct2">
+<div class="card" style="background:#161C24;border:1px solid #2A3441;border-radius:12px;padding:16px;margin-bottom:14px">
+<div style="font-family:'Bebas Neue';font-size:16px;letter-spacing:2px;color:#00A8E8;margin-bottom:4px">Digital Ductulator</div>
+<div style="font-size:11px;color:#6B7785;font-weight:500;margin-bottom:12px">Enter any <b style="color:#F5F2EC">two</b> of CFM / friction / velocity / diameter — get the rest. Galvanized round, standard air.</div>
+<div class="row"><div class="field"><label>Air Volume</label><div class="ibox"><input id="dt-cfm" type="number" inputmode="decimal" placeholder="—" oninput="ductu('cfm')"><span class="u">CFM</span></div></div>
+<div class="field"><label>Friction /100ft</label><div class="ibox"><input id="dt-fr" type="number" inputmode="decimal" placeholder="—" oninput="ductu('fr')"><span class="u">in wg</span></div></div></div>
+<div class="row"><div class="field"><label>Velocity</label><div class="ibox"><input id="dt-v" type="number" inputmode="decimal" placeholder="—" oninput="ductu('v')"><span class="u">FPM</span></div></div>
+<div class="field"><label>Round Ø</label><div class="ibox"><input id="dt-d" type="number" inputmode="decimal" placeholder="—" oninput="ductu('d')"><span class="u">in</span></div></div></div>
+<div class="seg" style="display:flex;gap:6px;margin-bottom:4px"><button id="du-mode-fr" class="duseg on" onclick="duMode('fr')">CFM + Friction</button><button id="du-mode-v" class="duseg" onclick="duMode('v')">CFM + Velocity</button></div>
+<div style="font-size:10px;color:#6B7785;margin-top:8px;line-height:1.6">Pick which pair you're entering. Other two compute live. <b style="color:#7FB5D5">Verified vs SMACNA wheel:</b> 5000 CFM @ 0.1" → 1400 FPM, 25.5".</div>
+</div>
+<div class="card" style="background:#161C24;border:1px solid #2A3441;border-radius:12px;padding:16px;margin-bottom:14px">
+<div style="font-family:'Bebas Neue';font-size:16px;letter-spacing:2px;color:#00A8E8;margin-bottom:10px">Equivalent Rectangular</div>
+<div style="font-size:11px;color:#6B7785;font-weight:500;margin-bottom:10px">From the round Ø above, enter one rect side → get the other (equal friction).</div>
+<div class="row"><div class="field"><label>One side</label><div class="ibox"><input id="dt-a" type="number" inputmode="decimal" placeholder="—" oninput="ductRect()"><span class="u">in</span></div></div>
+<div class="field"><label>Other side</label><div class="ibox" style="border-color:#00A8E8"><input id="dt-b" type="number" readonly placeholder="—" style="color:#00A8E8"><span class="u">in</span></div></div></div>
+<div id="dt-rect-list" style="font-size:11px;color:#7FB5D5;font-weight:600;margin-top:6px;line-height:1.8"></div>
+</div>
+<div class="footer">VITAL AIR MECHANICAL INC. · EDMONTON, AB</div>
+</div>
+
+<!-- HISTORY -->
+<div class="page" id="page-hist">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+<div style="font-family:'Bebas Neue';font-size:18px;letter-spacing:2px;color:#00A8E8">Saved Readings</div>
+<button onclick="clearLog()" style="background:transparent;border:1px solid #2A3441;border-radius:6px;color:#E5867A;font-family:'DM Sans';font-size:11px;font-weight:700;padding:6px 11px;cursor:pointer;text-transform:uppercase">clear all</button>
+</div>
+<div id="histlist"></div>
+<div style="font-size:10px;color:#3A4654;text-align:center;margin-top:14px;line-height:1.6">Saved on this phone only · survives closing the app<br>Tap a row's ✕ to delete it</div>
+<div class="footer">VITAL AIR MECHANICAL INC. · EDMONTON, AB</div>
+</div>
+
+<!-- UNITS -->
+<div class="page" id="page-units">
+<div style="font-size:11px;color:#6B7785;font-weight:500;margin-bottom:14px">Type in any box — everything in that row converts live. Imperial ⟷ metric, both directions.</div>
+<div id="units-wrap"></div>
+<div class="footer">VITAL AIR MECHANICAL INC. · EDMONTON, AB</div>
+</div>
+
+<!-- CACU -->
+<div class="page" id="page-cacu">
+<div class="warn-note">Air handler (CACU) → area served. Transcribed from facility list. Verify against current plant records before any shutdown.</div>
+<div class="field" style="margin-bottom:12px"><label style="display:block;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#6B7785;margin-bottom:6px;font-weight:700">Search CACU # or zone</label><div class="ibox" style="display:flex;align-items:center;background:#0D1117;border:1px solid #2A3441;border-radius:8px"><input id="cacuSearch" type="text" placeholder="e.g. 3B  or  9/10  or  pharmacy" oninput="cacuFilter()" style="background:transparent;border:none;outline:none;color:#F5F2EC;font-family:'DM Sans';font-size:16px;font-weight:700;padding:10px;width:100%"></div></div>
+<div id="cacu-list"></div>
+<div class="footer">VITAL AIR MECHANICAL INC. · EDMONTON, AB</div>
 </div>
 
 <!-- SCI CALC -->
@@ -137,6 +208,26 @@ body{background:#0D1117;color:#F5F2EC;font-family:'DM Sans',sans-serif;padding:m
 <!-- FORMULAS (interactive) -->
 <div class="page" id="page-form">
 <div id="formula-list"></div>
+<div class="fcat">Recommended Max Duct Velocities (FPM)</div>
+<div class="ref"><table class="htable"><tr><th>Application</th><th>Main S/R</th><th>Branch S/R</th></tr>
+<tr><td>Apartments</td><td>1000/800</td><td>600/600</td></tr>
+<tr><td>Hospital Rooms</td><td>1500/1300</td><td>1200/1000</td></tr>
+<tr><td>Hotel Rooms</td><td>1500/1300</td><td>1200/1000</td></tr>
+<tr><td>Offices</td><td>2000/1500</td><td>1600/1200</td></tr>
+<tr><td>Banks</td><td>2000/1500</td><td>1600/1200</td></tr>
+<tr><td>Auditoriums</td><td>1300/1100</td><td>1000/800</td></tr>
+<tr><td>Theaters</td><td>1300/1100</td><td>1000/800</td></tr>
+<tr><td>Industrial</td><td>3000/1800</td><td>2200/1500</td></tr></table>
+<div class="fnote" style="font-size:10.5px;margin-top:8px">S=Supply, R=Return. When sound control is critical, use branch values. (SMACNA/SMART)</div></div>
+<div class="fcat">Typical Design Face Velocities (FPM)</div>
+<div class="ref"><table class="htable"><tr><th>Air Path Element</th><th>FPM</th></tr>
+<tr><td>Outdoor air intake</td><td>400*</td></tr>
+<tr><td>Exhaust</td><td>500*</td></tr>
+<tr><td>Throw-away filter</td><td>200–800</td></tr>
+<tr><td>Heating coil (steam/HW)</td><td>400–500</td></tr>
+<tr><td>Cooling coil</td><td>500–600</td></tr>
+<tr><td>Return thru door undercut</td><td>200–300</td></tr></table>
+<div class="fnote" style="font-size:10.5px;margin-top:8px">*Louver net free area. 300 FPM typical upper limit for inexpensive throw-away filters.</div></div>
 <div class="warn-note" style="margin-top:14px;margin-bottom:0">⚠ Reference/calculation aid only. Your facility's commissioned setpoints govern.</div>
 <div class="footer">VITAL AIR MECHANICAL INC. · EDMONTON, AB</div>
 </div>
@@ -272,6 +363,10 @@ ActualFlow = Kfactor * SQR(VelPressure)</div><div class="fnote">That K × √VP 
 
 <div class="bottombar">
 <button class="btab active" id="tab-duct" onclick="showPage('duct')"><span class="icon">▦</span>Duct</button>
+<button class="btab" id="tab-duct2" onclick="showPage('duct2')"><span class="icon">🎡</span>Ductu</button>
+<button class="btab" id="tab-hist" onclick="showPage('hist')"><span class="icon">🕐</span>Log</button>
+<button class="btab" id="tab-units" onclick="showPage('units')"><span class="icon">📏</span>Units</button>
+<button class="btab" id="tab-cacu" onclick="showPage('cacu')"><span class="icon">🏢</span>CACU</button>
 <button class="btab" id="tab-calc" onclick="showPage('calc')"><span class="icon">🔢</span>Calc</button>
 <button class="btab" id="tab-form" onclick="showPage('form')"><span class="icon">📋</span>Formulas</button>
 <button class="btab" id="tab-hosp" onclick="showPage('hosp')"><span class="icon">🏥</span>Hosp</button>
@@ -281,15 +376,15 @@ ActualFlow = Kfactor * SQR(VelPressure)</div><div class="fnote">That K × √VP 
 
 <script>
 const shapes={hd:'round',cd:'round'};
-const subs={duct:'Duct Flow Calc — Shortridge ADM-870C',calc:'Scientific Calculator',form:'HVAC Formula Calculators',hosp:'Hospital Reference — ASHRAE 170',icra:'ICRA Containment Reference',cb:'Control BASIC Crash Course'};
+const subs={duct:'Duct Flow Calc — Shortridge ADM-870C',duct2:'Digital Ductulator — SMACNA',hist:'Saved Readings Log',units:'Unit Converter — Imperial ⟷ Metric',cacu:'Air Handler / Area Reference',calc:'Scientific Calculator',form:'HVAC Formula Calculators',hosp:'Hospital Reference — ASHRAE 170',icra:'ICRA Containment Reference',cb:'Control BASIC Crash Course'};
 function f(v,d){return (v==null||isNaN(v))?"—":v.toFixed(d);}
-function showPage(p){['duct','calc','form','hosp','icra','cb'].forEach(x=>{document.getElementById('page-'+x).className='page'+(x===p?' show':'');document.getElementById('tab-'+x).className='btab'+(x===p?' active':'');});document.getElementById('subtitle').textContent=subs[p];}
+function showPage(p){['duct','duct2','hist','units','cacu','calc','form','hosp','icra','cb'].forEach(x=>{document.getElementById('page-'+x).className='page'+(x===p?' show':'');document.getElementById('tab-'+x).className='btab'+(x===p?' active':'');});document.getElementById('subtitle').textContent=subs[p];if(p==='hist')renderLog();if(p==='units')buildUnits();if(p==='cacu')buildCacu();}
 function toggleLog(){const c=document.getElementById('changelog');c.className='changelog'+(c.className.includes('show')?'':' show');}
 function tog(el){const c=el.parentElement;c.className='fcard'+(c.className.includes('open')?'':' open');}
 
 function setShape(id,shape){shapes[id]=shape;const ac=id==='hd'?'active-hd':'active-cd';document.getElementById(id+'-round-btn').className='tog-btn'+(shape==='round'?' '+ac:'');document.getElementById(id+'-rect-btn').className='tog-btn'+(shape==='rect'?' '+ac:'');const fpmVal=(document.getElementById(id+'-f')||{}).value||'';if(shape==='round'){document.getElementById(id+'-inputs').innerHTML=`<div class="row"><div class="field"><label>Diameter</label><div class="ibox"><input id="${id}-d" type="number" inputmode="decimal" placeholder="0" oninput="go('${id}')"><span class="u">in</span></div></div><div class="field"><label>Shortridge FPM</label><div class="ibox"><input id="${id}-f" type="number" inputmode="decimal" placeholder="0" value="${fpmVal}" oninput="go('${id}')"><span class="u">FPM</span></div></div></div>`;}else{document.getElementById(id+'-inputs').innerHTML=`<div class="row3"><div class="field"><label>Width</label><div class="ibox"><input id="${id}-w" type="number" inputmode="decimal" placeholder="0" oninput="go('${id}')"><span class="u">in</span></div></div><div class="field"><label>Height</label><div class="ibox"><input id="${id}-h" type="number" inputmode="decimal" placeholder="0" oninput="go('${id}')"><span class="u">in</span></div></div><div class="field"><label>FPM</label><div class="ibox"><input id="${id}-f" type="number" inputmode="decimal" placeholder="0" value="${fpmVal}" oninput="go('${id}')"><span class="u">FPM</span></div></div></div>`;}document.getElementById(id+'-out').innerHTML='<div class="empty">enter size + FPM</div>';}
-function go(id){const fpm=parseFloat((document.getElementById(id+'-f')||{}).value||0);const out=document.getElementById(id+'-out');const lsc=id==='hd'?'ls-h':'ls-c';let ain,aft,lbl;if(shapes[id]==='round'){const d=parseFloat((document.getElementById(id+'-d')||{}).value||0);if(!d||!fpm||d<=0||fpm<=0){out.innerHTML='<div class="empty">enter size + FPM</div>';return;}ain=Math.PI/4*d*d;aft=ain/144;lbl=`π/4 × ${d}² ÷ 144 = <b>${f(ain,2)}</b> in²`;}else{const w=parseFloat((document.getElementById(id+'-w')||{}).value||0),h=parseFloat((document.getElementById(id+'-h')||{}).value||0);if(!w||!h||!fpm||w<=0||h<=0||fpm<=0){out.innerHTML='<div class="empty">enter size + FPM</div>';return;}ain=w*h;aft=ain/144;lbl=`${w} × ${h} ÷ 144 = <b>${f(ain,2)}</b> in²`;}const cfm=aft*fpm,ls=cfm*0.4719;out.innerHTML=`<div class="results"><div class="rbox cfm"><div class="rl">CFM</div><div class="rv">${f(cfm,1)}</div></div><div class="rbox ${lsc}"><div class="rl">L/s</div><div class="rv">${f(ls,1)}</div></div></div><div class="trace">area = ${lbl} = <b>${f(aft,4)}</b> ft²<br>CFM = <b>${f(aft,4)}</b> × <b>${fpm}</b> = <b>${f(cfm,1)}</b><br>L/s = <b>${f(cfm,1)}</b> × 0.4719 = <b>${f(ls,1)}</b></div>`;}
-function clr(id){setShape(id,'round');document.getElementById(id+'-out').innerHTML='<div class="empty">enter size + FPM</div>';}
+function go(id){const fpm=parseFloat((document.getElementById(id+'-f')||{}).value||0);const out=document.getElementById(id+'-out');const lsc=id==='hd'?'ls-h':'ls-c';let ain,aft,lbl,dimStr;if(shapes[id]==='round'){const d=parseFloat((document.getElementById(id+'-d')||{}).value||0);if(!d||!fpm||d<=0||fpm<=0){out.innerHTML='<div class="empty">enter size + FPM</div>';lastCalc[id]=null;return;}ain=Math.PI/4*d*d;aft=ain/144;lbl=`π/4 × ${d}² ÷ 144 = <b>${f(ain,2)}</b> in²`;dimStr='Ø'+d+'"';}else{const w=parseFloat((document.getElementById(id+'-w')||{}).value||0),h=parseFloat((document.getElementById(id+'-h')||{}).value||0);if(!w||!h||!fpm||w<=0||h<=0||fpm<=0){out.innerHTML='<div class="empty">enter size + FPM</div>';lastCalc[id]=null;return;}ain=w*h;aft=ain/144;lbl=`${w} × ${h} ÷ 144 = <b>${f(ain,2)}</b> in²`;dimStr=w+'×'+h+'"';}const cfm=aft*fpm,ls=cfm*0.4719;lastCalc[id]={deck:id.toUpperCase(),shape:shapes[id],dim:dimStr,fpm:fpm,cfm:cfm.toFixed(1),ls:ls.toFixed(1)};out.innerHTML=`<div class="results"><div class="rbox cfm"><div class="rl">CFM</div><div class="rv">${f(cfm,1)}</div></div><div class="rbox ${lsc}"><div class="rl">L/s</div><div class="rv">${f(ls,1)}</div></div></div><div class="trace">area = ${lbl} = <b>${f(aft,4)}</b> ft²<br>CFM = <b>${f(aft,4)}</b> × <b>${fpm}</b> = <b>${f(cfm,1)}</b><br>L/s = <b>${f(cfm,1)}</b> × 0.4719 = <b>${f(ls,1)}</b></div><button class="savebtn" onclick="saveLog('${id}')">＋ save to history</button>`;}
+function clr(id){setShape(id,'round');document.getElementById(id+'-out').innerHTML='<div class="empty">enter size + FPM</div>';lastCalc[id]=null;}
 
 // scientific calc
 let expr='', memVal=0, xVal=null, yVal=null, degMode=true;
@@ -371,6 +466,26 @@ const formulas=[
    {t:'Belt length (approx)',form:'L = 2C + 1.57(D+d) + (D−d)²/4C',in:[{id:'c',l:'Center dist C',u:'in'},{id:'D',l:'Large Ø',u:'in'},{id:'d',l:'Small Ø',u:'in'}],out:r=>['Belt L',(2*r.c+1.57*(r.D+r.d)+Math.pow(r.D-r.d,2)/(4*r.c)).toFixed(1)]},
    {t:'Belt speed (FPM)',form:'FPM = π × Ø × RPM ÷ 12',in:[{id:'dia',l:'Sheave Ø',u:'in'},{id:'rpm',l:'RPM',u:''}],out:r=>['Belt FPM',(Math.PI*r.dia*r.rpm/12).toFixed(0)]},
  ]},
+ {cat:'Density / Std Air',items:[
+   {t:'Air density (corrected)',form:'ρ = 0.075 × (530/(460+T)) × (BAR/29.92)',in:[{id:'t',l:'Temp',u:'°F'},{id:'bar',l:'Baro',u:'inHg'}],out:r=>['lb/ft³',(0.075*(530/(460+r.t))*(r.bar/29.92)).toFixed(4)]},
+   {t:'Velocity from VP + density',form:'V = 1096.7 × √(VP/ρ)',in:[{id:'vp',l:'VP',u:'inWG'},{id:'den',l:'Density',u:'lb/ft³'}],out:r=>['FPM',(1096.7*Math.sqrt(r.vp/r.den)).toFixed(0)]},
+   {t:'BTUH sensible (density corr.)',form:'BTUH = CFM × 1.08 × ΔT × (ρ/0.075)',in:[{id:'cfm',l:'CFM',u:''},{id:'dt',l:'ΔT',u:'°F'},{id:'den',l:'Density',u:'lb/ft³'}],out:r=>['BTU/h',(r.cfm*1.08*r.dt*(r.den/0.075)).toFixed(0)]},
+ ]},
+ {cat:'Mixed Air Temps',items:[
+   {t:'Mixed air temp (MAT)',form:'MAT = (%OA×OAT + %RA×RAT)/100',in:[{id:'oa',l:'%OA',u:'%'},{id:'oat',l:'OAT',u:'°F'},{id:'rat',l:'RAT',u:'°F'}],out:r=>['MAT °F',(((r.oa)*r.oat+(100-r.oa)*r.rat)/100).toFixed(1)]},
+   {t:'% Outside air',form:'%OA = (RAT−MAT)/(RAT−OAT) × 100',in:[{id:'rat',l:'RAT',u:'°F'},{id:'mat',l:'MAT',u:'°F'},{id:'oat',l:'OAT',u:'°F'}],out:r=>['%OA',((r.rat-r.mat)/(r.rat-r.oat)*100).toFixed(1)]},
+ ]},
+ {cat:'VAV / Cv / Fan Eff',items:[
+   {t:'Flow coefficient Cv',form:'Cv = CFM ÷ √ΔP',in:[{id:'cfm',l:'CFM',u:''},{id:'dp',l:'ΔP',u:'inWG'}],out:r=>['Cv',(r.cfm/Math.sqrt(r.dp)).toFixed(1)]},
+   {t:'CFM from Cv',form:'CFM = Cv × √ΔP',in:[{id:'cv',l:'Cv',u:''},{id:'dp',l:'ΔP',u:'inWG'}],out:r=>['CFM',(r.cv*Math.sqrt(r.dp)).toFixed(0)]},
+   {t:'Static fan efficiency',form:'Eff = (CFM × SP) ÷ (6356 × BHP)',in:[{id:'cfm',l:'CFM',u:''},{id:'sp',l:'SP',u:'inWG'},{id:'bhp',l:'BHP',u:''}],out:r=>['Eff',(r.cfm*r.sp/(6356*r.bhp)).toFixed(3)]},
+ ]},
+ {cat:'BHP / Sheave Sizing',items:[
+   {t:'Estimated BHP',form:'BHP = (Amps × Volts) ÷ 745.7',in:[{id:'a',l:'Amps',u:'A'},{id:'v',l:'Volts',u:'V'}],out:r=>['BHP',(r.a*r.v/745.7).toFixed(2)]},
+   {t:'3-phase BHP',form:'BHP = (1.732×A×V×Eff×PF)÷745.7',in:[{id:'a',l:'Amps',u:'A'},{id:'v',l:'Volts',u:'V'},{id:'ef',l:'Eff×PF',u:''}],out:r=>['BHP',(1.732*r.a*r.v*r.ef/745.7).toFixed(2)]},
+   {t:'New sheave Ø from RPM',form:'Ønew = Øold × (RPMnew ÷ RPMold)',in:[{id:'do',l:'Old Ø',u:'in'},{id:'rn',l:'RPM new',u:''},{id:'ro',l:'RPM old',u:''}],out:r=>['New Ø',(r.do*r.rn/r.ro).toFixed(2)]},
+   {t:'Max sheave from BHP',form:'Ømax = Øexist × ∛(MaxBHP ÷ EstBHP)',in:[{id:'de',l:'Exist Ø',u:'in'},{id:'mb',l:'Max BHP',u:''},{id:'eb',l:'Est BHP',u:''}],out:r=>['Max Ø',(r.de*Math.cbrt(r.mb/r.eb)).toFixed(2)]},
+ ]},
  {cat:'Conversions',items:[
    {t:'°F → °C',form:'°C = (°F − 32) × 5/9',in:[{id:'f',l:'°F',u:'°F'}],out:r=>['°C',((r.f-32)*5/9).toFixed(1)]},
    {t:'°C → °F',form:'°F = (°C × 9/5) + 32',in:[{id:'c',l:'°C',u:'°C'}],out:r=>['°F',((r.c*9/5)+32).toFixed(1)]},
@@ -404,7 +519,138 @@ function calcF(ci,ii){
   out.innerHTML=`<div class="fol">${label}</div><div class="fov">${val}</div>`;
 }
 
-setShape('hd','round'); setShape('cd','round'); buildFormulas(); updateStatus();
+// ===== ductulator (SMACNA-verified) =====
+let duMode_='fr';
+function duMode(m){duMode_=m;document.getElementById('du-mode-fr').className='duseg'+(m==='fr'?' on':'');document.getElementById('du-mode-v').className='duseg'+(m==='v'?' on':'');}
+function velQD(Q,D){const a=Math.PI/4*Math.pow(D/12,2);return Q/a;}
+function frQD(Q,D){return 0.109136*Math.pow(Q,1.9)/Math.pow(D,5.02);}
+function dQF(Q,Hf){return Math.pow(0.109136*Math.pow(Q,1.9)/Hf,1/5.02);}
+function dQV(Q,V){const a=Q/V;return 12*Math.sqrt(4*a/Math.PI);}
+function deRect(a,b){return 1.30*Math.pow(a*b,0.625)/Math.pow(a+b,0.25);}
+function ductu(src){
+  const Q=parseFloat(document.getElementById('dt-cfm').value);
+  if(duMode_==='fr'){
+    const Hf=parseFloat(document.getElementById('dt-fr').value);
+    if(Q>0&&Hf>0){const D=dQF(Q,Hf),V=velQD(Q,D);document.getElementById('dt-d').value=D.toFixed(1);document.getElementById('dt-v').value=V.toFixed(0);ductRect();}
+  } else {
+    const V=parseFloat(document.getElementById('dt-v').value);
+    if(Q>0&&V>0){const D=dQV(Q,V),Hf=frQD(Q,D);document.getElementById('dt-d').value=D.toFixed(1);document.getElementById('dt-fr').value=Hf.toFixed(3);ductRect();}
+  }
+}
+function ductRect(){
+  const D=parseFloat(document.getElementById('dt-d').value);
+  const a=parseFloat(document.getElementById('dt-a').value);
+  if(D>0&&a>0){
+    let lo=1,hi=300;for(let k=0;k<60;k++){const mid=(lo+hi)/2;if(deRect(a,mid)<D)lo=mid;else hi=mid;}
+    document.getElementById('dt-b').value=((lo+hi)/2).toFixed(1);
+  } else { document.getElementById('dt-b').value=''; }
+  // suggest a few standard equivalents
+  if(D>0){
+    const sizes=[6,8,10,12,14,16,18,20,22,24,26,28,30,36];let opts=[];
+    sizes.forEach(s=>{let lo=1,hi=300;for(let k=0;k<50;k++){const mid=(lo+hi)/2;if(deRect(s,mid)<D)lo=mid;else hi=mid;}const o=(lo+hi)/2;if(o>=s&&o<=120)opts.push(s+'×'+Math.round(o));});
+    document.getElementById('dt-rect-list').innerHTML='Std equivalents: '+opts.slice(0,6).join(' · ');
+  }
+}
+
+// ===== history log (localStorage, persists on phone) =====
+var lastCalc={hd:null,cd:null};
+var LOGKEY='vitalair_duct_log';
+function getLog(){try{return JSON.parse(localStorage.getItem(LOGKEY)||'[]');}catch(e){return [];}}
+function putLog(arr){try{localStorage.setItem(LOGKEY,JSON.stringify(arr));}catch(e){}}
+function saveLog(id){
+  var c=lastCalc[id];if(!c)return;
+  var label=(document.getElementById('boxlabel').value||'').trim();
+  var entry={t:Date.now(),label:label,deck:c.deck,shape:c.shape,dim:c.dim,fpm:c.fpm,cfm:c.cfm,ls:c.ls};
+  var arr=getLog();arr.unshift(entry);if(arr.length>500)arr=arr.slice(0,500);putLog(arr);
+  // quick confirm flash on the button
+  var btns=document.querySelectorAll('.savebtn');btns.forEach(function(b){if(b.getAttribute('onclick').includes("'"+id+"'")){b.textContent='✓ saved';setTimeout(function(){b.textContent='＋ save to history';},1200);}});
+}
+function renderLog(){
+  var arr=getLog();var el=document.getElementById('histlist');
+  if(!arr.length){el.innerHTML='<div class="histempty">No saved readings yet.<br>Run a duct calc and tap "save to history".</div>';return;}
+  var html='';
+  arr.forEach(function(e,i){
+    var d=new Date(e.t);var ts=d.toLocaleString('en-CA',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+    html+='<div class="histrow"><div class="hmain"><div class="htop"><span class="hdeck '+e.deck+'">'+e.deck+'</span>'+(e.label?'<span class="hlabel">'+e.label+'</span>':'')+'</div>'
+      +'<div class="hvals">'+e.dim+' · '+e.fpm+' FPM → <b>'+e.cfm+' CFM</b> · <b>'+e.ls+' L/s</b></div>'
+      +'<div class="htime">'+ts+'</div></div>'
+      +'<button class="hdel" onclick="delLog('+e.t+')">✕</button></div>';
+  });
+  el.innerHTML=html;
+}
+function delLog(t){var arr=getLog().filter(function(e){return e.t!==t;});putLog(arr);renderLog();}
+function clearLog(){if(confirm('Clear all saved readings? This cannot be undone.')){putLog([]);renderLog();}}
+
+// ===== unit converter (each row: list of {u,label,toBase} where base is first unit) =====
+// conversion stored as factor to a base unit per category
+var unitRows=[
+ {cat:'Length', base:'m', units:[['m','meter',1],['ft','foot',0.3048],['in','inch',0.0254],['mm','millimeter',0.001],['cm','centimeter',0.01],['yd','yard',0.9144]]},
+ {cat:'Pressure', base:'Pa', units:[['Pa','pascal',1],['in wg','inch water',249.0889],['kPa','kilopascal',1000],['psi','psi',6894.76],['inHg','inch mercury',3386.39],['mbar','millibar',100]]},
+ {cat:'Airflow', base:'L/s', units:[['L/s','litre/sec',1],['CFM','cu ft/min',0.471947],['m³/h','cu m/hour',0.277778],['m³/s','cu m/sec',1000]]},
+ {cat:'Velocity', base:'m/s', units:[['m/s','metre/sec',1],['FPM','ft/min',0.00508],['km/h','km/hour',0.277778],['mph','miles/hour',0.44704]]},
+ {cat:'Temperature', special:'temp'},
+ {cat:'Area', base:'m²', units:[['m²','sq metre',1],['ft²','sq foot',0.092903],['in²','sq inch',0.00064516],['cm²','sq cm',0.0001]]},
+ {cat:'Volume', base:'L', units:[['L','litre',1],['gal US','US gallon',3.78541],['gal UK','Imp gallon',4.54609],['ft³','cu foot',28.3168],['mL','millilitre',0.001]]},
+ {cat:'Weight', base:'kg', units:[['kg','kilogram',1],['lb','pound',0.453592],['g','gram',0.001],['oz','ounce',0.0283495]]},
+ {cat:'Power', base:'W', units:[['W','watt',1],['BTU/h','BTU/hour',0.293071],['kW','kilowatt',1000],['HP','horsepower',745.7],['ton','ton cooling',3516.85]]},
+];
+function buildUnits(){
+  if(document.getElementById('units-wrap').dataset.built)return;
+  var html='';
+  unitRows.forEach(function(row,ri){
+    html+='<div class="fcat">'+row.cat+'</div><div class="ref">';
+    if(row.special==='temp'){
+      html+='<div class="urow"><span class="ulab">°C</span><input class="uinp" id="temp_c" type="number" inputmode="decimal" oninput="tempFrom(\'c\')" placeholder="0"></div>';
+      html+='<div class="urow"><span class="ulab">°F</span><input class="uinp" id="temp_f" type="number" inputmode="decimal" oninput="tempFrom(\'f\')" placeholder="32"></div>';
+      html+='<div class="urow"><span class="ulab">K</span><input class="uinp" id="temp_k" type="number" inputmode="decimal" oninput="tempFrom(\'k\')" placeholder="273.15"></div>';
+    } else {
+      row.units.forEach(function(u,ui){
+        html+='<div class="urow"><span class="ulab">'+u[0]+'</span><input class="uinp" id="u_'+ri+'_'+ui+'" type="number" inputmode="decimal" oninput="uConv('+ri+','+ui+')" placeholder="0"><span class="udesc">'+u[1]+'</span></div>';
+      });
+    }
+    html+='</div>';
+  });
+  document.getElementById('units-wrap').innerHTML=html;
+  document.getElementById('units-wrap').dataset.built='1';
+}
+function uConv(ri,ui){
+  var row=unitRows[ri];var v=parseFloat(document.getElementById('u_'+ri+'_'+ui).value);
+  if(isNaN(v)){row.units.forEach(function(u,j){if(j!==ui)document.getElementById('u_'+ri+'_'+j).value='';});return;}
+  var base=v*row.units[ui][2];
+  row.units.forEach(function(u,j){if(j!==ui){var out=base/u[2];document.getElementById('u_'+ri+'_'+j).value=parseFloat(out.toPrecision(6));}});
+}
+function tempFrom(src){
+  var c;var cv=document.getElementById('temp_c'),fv=document.getElementById('temp_f'),kv=document.getElementById('temp_k');
+  if(src==='c')c=parseFloat(cv.value);else if(src==='f')c=(parseFloat(fv.value)-32)*5/9;else c=parseFloat(kv.value)-273.15;
+  if(isNaN(c)){if(src!=='c')cv.value='';if(src!=='f')fv.value='';if(src!=='k')kv.value='';return;}
+  if(src!=='c')cv.value=parseFloat(c.toPrecision(6));
+  if(src!=='f')fv.value=parseFloat((c*9/5+32).toPrecision(6));
+  if(src!=='k')kv.value=parseFloat((c+273.15).toPrecision(6));
+}
+
+// ===== CACU reference =====
+var cacuData=[
+ ['1/2','3B'],['3/4','4B, 5B'],['5/6','0B, 1B, 2B1, 2B4, 2B5'],['7/8','0C, 1C, 2C, 4C, 5C'],
+ ['9/10','1C, 1H, 2A4, 3A4, 3H, 4H, 5H'],['11/12','0A, 1A, 2A, 4A, 5A'],['13/14','0D, 1D, 2D, 3D, 4D, 5D'],
+ ['15/16','1E, 2E, 3E, 4E, 5E'],['17/18','1F, 2F, 3F, 4F, 5F'],['19/20','1J, 1G, 2J, 2G, 3G, 4G, 5G'],
+ ['21/22','0H, 1H, 2H, 3H, 4H, 5H'],['23','1K3, 2K3'],['25/26','2B2, 2B3'],['28','0G (Pharmacy)'],
+ ['29/30','3C, 4th Flr Labs'],['31/32/33/34','0A2, 0A6, 0A7, 0A8, 1A6, 1A7, 1A8'],['35/36','3A'],
+ ['SA-2-08','Snell Hall'],['SA-2-09','PJ, 0J']
+];
+function buildCacu(filter){
+  var q=(filter||'').toUpperCase().trim();
+  var html='<table class="htable"><tr><th>CACU #</th><th>Area Served</th></tr>';
+  cacuData.forEach(function(r){
+    if(!q || r[0].toUpperCase().indexOf(q)>=0 || r[1].toUpperCase().indexOf(q)>=0){
+      html+='<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>';
+    }
+  });
+  html+='</table>';
+  document.getElementById('cacu-list').innerHTML=html;
+}
+function cacuFilter(){buildCacu(document.getElementById('cacuSearch').value);}
+
+setShape('hd','round'); setShape('cd','round'); buildFormulas(); updateStatus(); duMode('fr');
 </script>
 </body>
 </html>
