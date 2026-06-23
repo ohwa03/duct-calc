@@ -90,6 +90,8 @@ body{background:#0D1117;color:#F5F2EC;font-family:'DM Sans',sans-serif;padding:m
 .rou-center{position:absolute;top:50%;left:0;right:0;height:40px;transform:translateY(-50%);border-top:1px solid rgba(0,168,232,0.5);border-bottom:1px solid rgba(0,168,232,0.5);pointer-events:none;z-index:1;}
 .rou-read{font-size:13px;color:#6B7785;font-weight:700;}
 .rou-read b{font-size:44px;color:#F5F2EC;font-weight:900;display:block;line-height:1;}
+.rou-circ{margin-top:12px;font-size:11px;color:#6B7785;font-weight:700;line-height:1.5;}
+.rou-circ b{font-size:22px;color:#00A8E8;display:block;}
 .subtog{display:flex;gap:6px;margin-bottom:16px;background:#161C24;padding:5px;border-radius:10px;}
 .subtog-btn{flex:1;padding:10px 4px;border-radius:7px;border:none;background:transparent;color:#6B7785;font-family:'DM Sans';font-size:12px;font-weight:700;letter-spacing:0.3px;cursor:pointer;}
 .subtog-btn.on{background:#2A3441;color:#00A8E8;}
@@ -180,7 +182,10 @@ body{background:#0D1117;color:#F5F2EC;font-family:'DM Sans',sans-serif;padding:m
 <div class="subtog"><button class="subtog-btn" data-sub="duct" onclick="subTo('duct')">Flow Calc</button><button class="subtog-btn" data-sub="hist" onclick="subTo('hist')">🕐 Log</button></div>
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
 <div style="font-family:'Bebas Neue';font-size:18px;letter-spacing:2px;color:#00A8E8">Saved Readings</div>
+<div style="display:flex;gap:6px">
+<button onclick="copyLog()" style="background:rgba(0,168,232,0.12);border:1px solid #00A8E8;border-radius:6px;color:#00A8E8;font-family:'DM Sans';font-size:11px;font-weight:700;padding:6px 11px;cursor:pointer;text-transform:uppercase" id="copybtn">copy all</button>
 <button onclick="clearLog()" style="background:transparent;border:1px solid #2A3441;border-radius:6px;color:#E5867A;font-family:'DM Sans';font-size:11px;font-weight:700;padding:6px 11px;cursor:pointer;text-transform:uppercase">clear all</button>
+</div>
 </div>
 <div id="histlist"></div>
 <div style="font-size:10px;color:#3A4654;text-align:center;margin-top:14px;line-height:1.6">Saved on this phone only · survives closing the app<br>Tap a row's ✕ to delete it</div>
@@ -390,9 +395,42 @@ ActualFlow = Kfactor * SQR(VelPressure)</div><div class="fnote">That K × √VP 
 </div>
 
 <script>
+/* ============================================================================
+   VITAL AIR — FIELD TOOLS
+   Vital Air Mechanical Inc. (16815383 Canada Inc.) · Edmonton, AB · 780-884-7490
+   ----------------------------------------------------------------------------
+   Single-file offline web app (PWA). No external dependencies except Google
+   Fonts. All state is in-page; History uses localStorage (per-device only).
+
+   TABS (6 top-level, some with sub-toggles):
+     Duct      → Flow Calc + Log (history)
+     Tools     → Ductulator + Units converter
+     Calc      → scientific calculator
+     Formulas  → interactive HVAC formula calculators
+     Facility  → Hospital (ASHRAE 170) + ICRA + CACU list
+     BASIC     → Reliable Controls Control BASIC reference
+
+   KEY FORMULAS & SOURCES (verify before relying on output):
+     Duct flow:   CFM = FPM × area(ft²);  area_round = π/4·d²/144;
+                  area_rect = W·H/144;  L/s = CFM × 0.4719
+     Ductulator:  Hf(in wg/100ft) = 0.109136 · Q^1.9 / D^5.02  (galv, std air)
+                  — verified vs SMACNA/SMART wheel: 5000 CFM @ 0.1" → 1400 FPM, 25.5"
+     Equiv rect:  De = 1.30·(a·b)^0.625 / (a+b)^0.25  (ASHRAE equivalent diameter)
+     Sensible:    BTU/h = 1.08 × CFM × ΔT       (1.08 = 0.075·0.24·60)
+     Hydronic:    BTU/h = 500 × GPM × ΔT        (500 = 8.33·60)
+     VP→V:        V(m/s)=1.414·√VP(Pa);  FPM=4005·√VP(in wg)
+     Conversions: 1 in wg = 249.0889 Pa; 1 CFM = 0.471947 L/s; 1 ton = 12000 BTU/h
+     Reference tables (ASHRAE 170, ICRA 2.0, CACU list) are LOOKUPS, not computed —
+     facility's commissioned setpoints always govern. See on-screen warning banners.
+
+   NOTE: localStorage (History) and the live currency/network features only work
+   on the deployed site (GitHub Pages) on a real device — not in sandboxed previews.
+   ============================================================================ */
+
 const shapes={hd:'round',cd:'round'};
 const subs={duct:'Duct Flow Calc — Shortridge ADM-870C',duct2:'Digital Ductulator — SMACNA',hist:'Saved Readings Log',units:'Unit Converter — Imperial ⟷ Metric',cacu:'Air Handler / Area Reference',calc:'Scientific Calculator',form:'HVAC Formula Calculators',hosp:'Hospital Reference — ASHRAE 170',icra:'ICRA Containment Reference',cb:'Control BASIC Crash Course'};
 function f(v,d){return (v==null||isNaN(v))?"—":v.toFixed(d);}
+function toSixteenths(dec){var whole=Math.floor(dec);var frac=Math.round((dec-whole)*16);if(frac===16){whole+=1;frac=0;}if(frac===0)return whole+'"';var num=frac,den=16;function g(a,b){return b?g(b,a%b):a;}var gg=g(num,den);num/=gg;den/=gg;return whole+' '+num+'/'+den+'"';}
 function showPage(p){['duct','duct2','hist','units','cacu','calc','form','hosp','icra','cb'].forEach(function(x){document.getElementById('page-'+x).className='page'+(x===p?' show':'');});document.getElementById('subtitle').textContent=subs[p];if(p==='hist')renderLog();if(p==='units')buildUnits();if(p==='cacu')buildCacu();}
 // top tab -> default sub-page, and which bottom tab lights up
 var tabGroup={duct:'duct',hist:'duct',duct2:'tools',units:'tools',calc:'calc',form:'form',hosp:'hosp',icra:'hosp',cacu:'hosp',cb:'cb'};
@@ -424,7 +462,7 @@ function setShape(id,shape){
   if(shape==='round'){
     var opts='';
     for(var sz=4;sz<=60;sz++){opts+='<div class="rouopt" data-v="'+sz+'" onclick="scrollToDia(\''+id+'\','+sz+')">'+sz+'</div>';}
-    document.getElementById(id+'-inputs').innerHTML='<div class="field"><label>Round \u00d8 \u2014 spin to select</label><input type="hidden" id="'+id+'-d" value=""><div class="rouwrap"><div class="roulette" id="'+id+'-rou" onscroll="rouScroll(\''+id+'\')"><div class="rou-center"></div><div class="rou-inner">'+opts+'</div></div><div class="rou-read"><b id="'+id+'-rd">—</b>inch \u00d8</div></div></div><div class="field"><label>Shortridge FPM</label><div class="ibox"><input id="'+id+'-f" type="number" inputmode="decimal" placeholder="0" value="'+fpmVal+'" oninput="go(\''+id+'\')"><span class="u">FPM</span></div></div>';
+    document.getElementById(id+'-inputs').innerHTML='<div class="field"><label>Round \u00d8 \u2014 spin to select</label><input type="hidden" id="'+id+'-d" value=""><div class="rouwrap"><div class="roulette" id="'+id+'-rou" onscroll="rouScroll(\''+id+'\')"><div class="rou-center"></div><div class="rou-inner">'+opts+'</div></div><div class="rou-read"><b id="'+id+'-rd">—</b>inch \u00d8<div class="rou-circ" id="'+id+'-circ"></div></div></div></div><div class="field"><label>Shortridge FPM</label><div class="ibox"><input id="'+id+'-f" type="number" inputmode="decimal" placeholder="0" value="'+fpmVal+'" oninput="go(\''+id+'\')"><span class="u">FPM</span></div></div>';
   } else {
     document.getElementById(id+'-inputs').innerHTML='<div class="row3"><div class="field"><label>Width</label><div class="ibox"><input id="'+id+'-w" type="number" inputmode="decimal" placeholder="0" oninput="go(\''+id+'\')"><span class="u">in</span></div></div><div class="field"><label>Height</label><div class="ibox"><input id="'+id+'-h" type="number" inputmode="decimal" placeholder="0" oninput="go(\''+id+'\')"><span class="u">in</span></div></div><div class="field"><label>FPM</label><div class="ibox"><input id="'+id+'-f" type="number" inputmode="decimal" placeholder="0" value="'+fpmVal+'" oninput="go(\''+id+'\')"><span class="u">FPM</span></div></div></div>';
   }
@@ -437,6 +475,7 @@ function rouScroll(id){
   var v=4+idx;if(v<4)v=4;if(v>60)v=60;
   document.getElementById(id+'-d').value=v;
   var rd=document.getElementById(id+'-rd');if(rd)rd.textContent=v+'"';
+  var circ=document.getElementById(id+'-circ');if(circ)circ.innerHTML='circumf<br><b>'+toSixteenths(Math.PI*v)+'</b>';
   var inner=rou.querySelector('.rou-inner');
   if(inner){var os=inner.querySelectorAll('.rouopt');for(var i=0;i<os.length;i++){os[i].className='rouopt'+(parseFloat(os[i].dataset.v)===v?' sel':'');}}
   clearTimeout(rouTimer[id]);
@@ -447,6 +486,7 @@ function scrollToDia(id,v){
   rou.scrollTo({top:(v-4)*40,behavior:'smooth'});
   document.getElementById(id+'-d').value=v;
   var rd=document.getElementById(id+'-rd');if(rd)rd.textContent=v+'"';
+  var circ=document.getElementById(id+'-circ');if(circ)circ.innerHTML='circumf<br><b>'+toSixteenths(Math.PI*v)+'</b>';
   setTimeout(function(){go(id);},200);
 }
 function go(id){const fpm=parseFloat((document.getElementById(id+'-f')||{}).value||0);const out=document.getElementById(id+'-out');const lsc=id==='hd'?'ls-h':'ls-c';let ain,aft,lbl,dimStr;if(shapes[id]==='round'){const d=parseFloat((document.getElementById(id+'-d')||{}).value||0);if(!d||!fpm||d<=0||fpm<=0){out.innerHTML='<div class="empty">enter size + FPM</div>';lastCalc[id]=null;return;}ain=Math.PI/4*d*d;aft=ain/144;lbl=`π/4 × ${d}² ÷ 144 = <b>${f(ain,2)}</b> in²`;dimStr='Ø'+d+'"';}else{const w=parseFloat((document.getElementById(id+'-w')||{}).value||0),h=parseFloat((document.getElementById(id+'-h')||{}).value||0);if(!w||!h||!fpm||w<=0||h<=0||fpm<=0){out.innerHTML='<div class="empty">enter size + FPM</div>';lastCalc[id]=null;return;}ain=w*h;aft=ain/144;lbl=`${w} × ${h} ÷ 144 = <b>${f(ain,2)}</b> in²`;dimStr=w+'×'+h+'"';}const cfm=aft*fpm,ls=cfm*0.4719;lastCalc[id]={deck:id.toUpperCase(),shape:shapes[id],dim:dimStr,fpm:fpm,cfm:cfm.toFixed(1),ls:ls.toFixed(1)};out.innerHTML=`<div class="results"><div class="rbox cfm"><div class="rl">CFM</div><div class="rv">${f(cfm,1)}</div></div><div class="rbox ${lsc}"><div class="rl">L/s</div><div class="rv">${f(ls,1)}</div></div></div><div class="trace">area = ${lbl} = <b>${f(aft,4)}</b> ft²<br>CFM = <b>${f(aft,4)}</b> × <b>${fpm}</b> = <b>${f(cfm,1)}</b><br>L/s = <b>${f(cfm,1)}</b> × 0.4719 = <b>${f(ls,1)}</b></div><button class="savebtn" onclick="saveLog('${id}')">＋ save to history</button>`;}
@@ -646,6 +686,28 @@ function renderLog(){
 }
 function delLog(t){var arr=getLog().filter(function(e){return e.t!==t;});putLog(arr);renderLog();}
 function clearLog(){if(confirm('Clear all saved readings? This cannot be undone.')){putLog([]);renderLog();}}
+function copyLog(){
+  var arr=getLog();
+  if(!arr.length){alert('No readings to copy yet.');return;}
+  var lines=['VITAL AIR — DUCT READINGS LOG',''];
+  arr.forEach(function(e){
+    var d=new Date(e.t).toLocaleString('en-CA',{year:'numeric',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+    lines.push(e.deck+(e.label?' · '+e.label:'')+' · '+e.dim+' · '+e.fpm+' FPM → '+e.cfm+' CFM / '+e.ls+' L/s · '+d);
+  });
+  lines.push('','— Vital Air Mechanical Inc. · '+arr.length+' readings');
+  var text=lines.join('\n');
+  var btn=document.getElementById('copybtn');
+  function ok(){if(btn){btn.textContent='✓ copied';setTimeout(function(){btn.textContent='copy all';},1500);}}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok).catch(function(){fallbackCopy(text,ok);});
+  } else { fallbackCopy(text,ok); }
+}
+function fallbackCopy(text,cb){
+  var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+  document.body.appendChild(ta);ta.focus();ta.select();
+  try{document.execCommand('copy');cb();}catch(e){alert('Copy failed — long-press to select:\n\n'+text);}
+  document.body.removeChild(ta);
+}
 
 // ===== unit converter (each row: list of {u,label,toBase} where base is first unit) =====
 // conversion stored as factor to a base unit per category
